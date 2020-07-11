@@ -111,7 +111,11 @@ const Chat = () => {
             {renderRemoteVideoText()}
             {renderRemoteVideo()}
             {renderLocalVideo()}
+            {renderChat()}
             {renderButtons()}
         </div>
     )
 }
+
+const domContainer = document.getElementById("chat-container");
+ReactDOM.render(<Chat />, domContainer);
