@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "react": "npx babel --watch src --out-dir ./public/react --presets react-app/prod",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

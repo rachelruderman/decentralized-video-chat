@@ -68,7 +68,7 @@ React is gradually being introduced to the frontend.
 Example - How to develop the `<Footer/>` React component:
 
 - In `notsupported.html`, change "production.min.js" to "development.js". This will give you unminified React warnings / errors.
-- In the terminal, run `npx babel --watch src --out-dir ./public/react --presets react-app/prod`. This will compile your React code in the `src` directory to vanilla JavaScript in the `public/react` directory
+- In the terminal, run `npm run react`. This will compile your React code in the `src` directory to vanilla JavaScript in the `public/react` directory
 - Open `src/Footer/index` and make a change. Note the compiled file also updates.
 - To see your change, start the server and navigate to `localhost:3000/notsupported`. Note: Hot reloading is not currently enabled.
 
