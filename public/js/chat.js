@@ -438,66 +438,6 @@ function windowResized() {
 // }
 // End Fullscreen
 
-// Mute microphone
-function muteMicrophone() {
-  var audioTrack = null;
-  // Get audio track to mute
-  VideoChat.peerConnection.getSenders().find(function (s) {
-    if (s.track.kind === "audio") {
-      audioTrack = s.track;
-    }
-  });
-  isMuted = !audioTrack.enabled;
-  audioTrack.enabled = isMuted;
-  isMuted = !isMuted;
-  // select mic button and mic button text
-  const micButtonIcon = document.getElementById("mic-icon");
-  const micButtonText = document.getElementById("mic-text");
-  // Update mute button text and icon
-  if (isMuted) {
-    micButtonIcon.classList.remove("fa-microphone");
-    micButtonIcon.classList.add("fa-microphone-slash");
-    micButtonText.innerText = "Unmute";
-  } else {
-    micButtonIcon.classList.add("fa-microphone");
-    micButtonIcon.classList.remove("fa-microphone-slash");
-    micButtonText.innerText = "Mute";
-  }
-}
-// End Mute microphone
-
-// Pause Video
-function pauseVideo() {
-  var videoTrack = null;
-  // Get video track to pause
-  VideoChat.peerConnection.getSenders().find(function (s) {
-    if (s.track.kind === "video") {
-      videoTrack = s.track;
-    }
-  });
-  videoIsPaused = !videoTrack.enabled;
-  videoTrack.enabled = videoIsPaused;
-  videoIsPaused = !videoIsPaused;
-  // select video button and video button text
-  const videoButtonIcon = document.getElementById("video-icon");
-  const videoButtonText = document.getElementById("video-text");
-  // update pause button icon and text
-  if (videoIsPaused) {
-    localVideoText.text("Video is paused");
-    localVideoText.show();
-    videoButtonIcon.classList.remove("fa-video");
-    videoButtonIcon.classList.add("fa-video-slash");
-    videoButtonText.innerText = "Unpause Video";
-  } else {
-    localVideoText.text("Video unpaused");
-    setTimeout(() => localVideoText.fadeOut(), 2000);
-    videoButtonIcon.classList.add("fa-video");
-    videoButtonIcon.classList.remove("fa-video-slash");
-    videoButtonText.innerText = "Pause Video";
-  }
-}
-// End pause Video
-
 // Swap camera / screen share
 function swap() {
   // Handle swap video before video call is connected
@@ -664,7 +604,7 @@ function startSpeech() {
         // subtracting as many complete 100 char slices from start
         dataChanel.send(
           "cap:" +
-            interimTranscript.substring(interimTranscript.length - charsToKeep)
+          interimTranscript.substring(interimTranscript.length - charsToKeep)
         );
       }
     }
@@ -742,14 +682,14 @@ function addMessageToScreen(msg, isOwnMessage) {
   if (isOwnMessage) {
     $(".chat-messages").append(
       '<div class="message-item customer cssanimation fadeInBottom"><div class="message-bloc"><div class="message">' +
-        msg +
-        "</div></div></div>"
+      msg +
+      "</div></div></div>"
     );
   } else {
     $(".chat-messages").append(
       '<div class="message-item moderator cssanimation fadeInBottom"><div class="message-bloc"><div class="message">' +
-        msg +
-        "</div></div></div>"
+      msg +
+      "</div></div></div>"
     );
   }
 }
