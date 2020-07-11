@@ -1,59 +1,81 @@
-import React from 'react';
-import { Button } from './Button';
+// todo - put in own directory
+var Button = function Button(props) {
+    var _props$button = props.button,
+        onClick = _props$button.onClick,
+        baseId = _props$button.baseId,
+        text = _props$button.text,
+        icon = _props$button.icon;
+
+
+    return React.createElement(
+        "div",
+        { className: "buttonContainer" },
+        React.createElement(
+            "button",
+            { className: "hoverButton", onClick: onClick },
+            React.createElement("i", { id: baseId + "-icon", className: "$fas fa-" + icon + " fa-xs" })
+        ),
+        React.createElement(
+            "div",
+            { id: baseId + "-text", className: "HoverState" },
+            text
+        )
+    );
+};
 
 var Chat = function Chat() {
 
     var renderHeader = function renderHeader() {
         return React.createElement(
-            'div',
-            { id: 'header' },
+            "div",
+            { id: "header" },
             React.createElement(
-                'a',
-                { target: '_blank', href: '/' },
-                React.createElement('img', { src: '/images/logo.svg', alt: 'Neon', width: '48', height: '48' }),
+                "a",
+                { target: "_blank", href: "/" },
+                React.createElement("img", { src: "/images/logo.svg", alt: "Neon", width: "48", height: "48" }),
                 React.createElement(
-                    'p',
+                    "p",
                     null,
-                    'Zipcall'
+                    "Zipcall"
                 )
             )
         );
     };
 
     var renderRemoteVideoText = function renderRemoteVideoText() {
-        return React.createElement('p', { id: 'remote-video-text' });
+        return React.createElement("p", { id: "remote-video-text" });
     };
 
     var renderRemoteVideo = function renderRemoteVideo() {
-        return React.createElement('video', { id: 'remote-video', autoplay: true, playsinline: true });
+        return React.createElement("video", { id: "remote-video", autoPlay: true, playsInline: true });
     };
 
     var renderLocalVideo = function renderLocalVideo() {
         return React.createElement(
-            'div',
-            { id: 'moveable' },
+            "div",
+            { id: "moveable" },
             React.createElement(
-                'p',
-                { id: 'local-video-text' },
-                'No webcam input'
+                "p",
+                { id: "local-video-text" },
+                "No webcam input"
             ),
-            React.createElement('video', { id: 'local-video', autoplay: true, muted: true, playsinline: true })
+            React.createElement("video", { id: "local-video", autoPlay: true, muted: true, playsInline: true })
         );
     };
 
     var renderChat = function renderChat() {
         return React.createElement(
-            'div',
-            { id: 'entire-chat' },
+            "div",
+            { id: "entire-chat" },
             React.createElement(
-                'div',
-                { id: 'chat-zone' },
-                React.createElement('div', { 'class': 'chat-messages' })
+                "div",
+                { id: "chat-zone" },
+                React.createElement("div", { className: "chat-messages" })
             ),
             React.createElement(
-                'form',
-                { 'class': 'compose' },
-                React.createElement('input', { type: 'text', placeholder: 'Type a message' })
+                "form",
+                { className: "compose" },
+                React.createElement("input", { type: "text", placeholder: "Type a message" })
             )
         );
     };
@@ -106,16 +128,16 @@ var Chat = function Chat() {
         }];
 
         return React.createElement(
-            'div',
-            { className: 'multi-button' },
+            "div",
+            { className: "multi-button" },
             buttons.map(function (button) {
-                return React.createElement(Button, { button: button });
+                return React.createElement(Button, { key: button.text, button: button });
             })
         );
     };
 
     return React.createElement(
-        'div',
+        "div",
         null,
         renderHeader(),
         renderRemoteVideoText(),

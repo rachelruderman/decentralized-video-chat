@@ -1,5 +1,3 @@
-import React from 'react';
-
 export var Button = function Button(props) {
     var _props$button = props.button,
         onClick = _props$button.onClick,

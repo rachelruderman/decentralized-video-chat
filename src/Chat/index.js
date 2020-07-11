@@ -1,5 +1,21 @@
-import React from 'react';
-import { Button } from './Button';
+// todo - put in own directory
+const Button = (props) => {
+    const {
+        onClick,
+        baseId,
+        text,
+        icon,
+    } = props.button;
+
+    return (
+        <div className="buttonContainer">
+            <button className="hoverButton" onClick={onClick}>
+                <i id={`${baseId}-icon`} className={`$fas fa-${icon} fa-xs`}></i>
+            </button>
+            <div id={`${baseId}-text`} className="HoverState">{text}</div>
+        </div>
+    )
+}
 
 const Chat = () => {
 
@@ -20,7 +36,7 @@ const Chat = () => {
 
     const renderRemoteVideo = () => {
         return (
-            <video id="remote-video" autoplay playsinline />
+            <video id="remote-video" autoPlay playsInline />
         )
     }
 
@@ -28,7 +44,7 @@ const Chat = () => {
         return (
             <div id="moveable">
                 <p id="local-video-text">No webcam input</p>
-                <video id="local-video" autoplay muted playsinline></video>
+                <video id="local-video" autoPlay muted playsInline />
             </div>
         )
     }
@@ -37,9 +53,9 @@ const Chat = () => {
         return (
             <div id="entire-chat">
                 <div id="chat-zone">
-                    <div class="chat-messages"></div>
+                    <div className="chat-messages"></div>
                 </div>
-                <form class="compose">
+                <form className="compose">
                     <input type="text" placeholder="Type a message" />
                 </form>
             </div>
@@ -100,20 +116,20 @@ const Chat = () => {
 
         return (
             <div className='multi-button'>
-                {buttons.map(button => <Button button={button} />)}
+                {buttons.map(button => <Button key={button.text} button={button} />)}
             </div>
         )
     }
 
     return (
-        <div>
+        <>
             {renderHeader()}
             {renderRemoteVideoText()}
             {renderRemoteVideo()}
             {renderLocalVideo()}
             {renderChat()}
             {renderButtons()}
-        </div>
+        </>
     )
 }
 
