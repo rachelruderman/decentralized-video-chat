@@ -1,8 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Button } from './Button'
 import DetectRTC from 'detectrtc';
 import Snackbar from 'node-snackbar';
 import io from 'socket.io-client';
+import { Header } from './Header';
+import { isWebRTCSupported } from './_util/isWebRtcSupported';
+import { Buttons } from './Buttons';
+import { logIt } from './_util/logIt';
+import { isMobileOrTablet } from './_util/isMobileOrTablet';
+import { RemoteVideo } from './RemoteVideo';
+import { LocalVideo } from './LocalVideo';
 
 export const Chat = () => {
 
@@ -51,357 +57,11 @@ export const Chat = () => {
         socket: io(),
         remoteVideo,
         recognition: undefined,
-
-        requestMediaStream: function (event) {
-            logIt("requestMediaStream");
-            rePositionLocalVideo();
-            navigator.mediaDevices
-                .getUserMedia({
-                    video: true,
-                    audio: true,
-                })
-                .then((stream) => {
-                    VideoChat.onMediaStream(stream);
-                    localVideoText.text("Drag Me");
-                    setTimeout(() => localVideoText.fadeOut(), 5000);
-                })
-                .catch((error) => {
-                    logIt(error);
-                    logIt(
-                        "Failed to get local webcam video, check webcam privacy settings"
-                    );
-                    // Keep trying to get user media
-                    setTimeout(VideoChat.requestMediaStream, 1000);
-                });
-        },
-
-        // Called when a video stream is added to VideoChat
-        onMediaStream: function (stream) {
-            logIt("onMediaStream");
-            VideoChat.localStream = stream;
-            // Add the stream as video's srcObject.
-            // Now that we have webcam video sorted, prompt user to share URL
-            Snackbar.show({
-                text: "Here is the join link for your call: " + url,
-                actionText: "Copy Link",
-                width: "750px",
-                pos: "top-center",
-                actionTextColor: "#616161",
-                duration: 500000,
-                backgroundColor: "#16171a",
-                onActionClick: function (element) {
-                    // Copy url to clipboard, this is achieved by creating a temporary element,
-                    // adding the text we want to that element, selecting it, then deleting it
-                    var copyContent = window.location.href;
-                    $('<input id="some-element">')
-                        .val(copyContent)
-                        .appendTo("body")
-                        .select();
-                    document.execCommand("copy");
-                    var toRemove = document.querySelector("#some-element");
-                    toRemove.parentNode.removeChild(toRemove);
-                    Snackbar.close();
-                },
-            });
-            if (!localVideo) return;
-            localVideo.srcObject = stream;
-            // Now we're ready to join the chat room.
-            VideoChat.socket.emit("join", roomHash);
-            // Add listeners to the websocket
-            VideoChat.socket.on("full", chatRoomFull);
-            VideoChat.socket.on("offer", VideoChat.onOffer);
-            VideoChat.socket.on("ready", VideoChat.readyToCall);
-            VideoChat.socket.on(
-                "willInitiateCall",
-                () => (VideoChat.willInitiateCall = true)
-            );
-        },
-
-        // Set up a callback to run when we have the ephemeral token to use Twilio's TURN server.
-        startCall: function (event) {
-            logIt("startCall >>> Sending token request...");
-            VideoChat.socket.on("token", VideoChat.onToken(VideoChat.createOffer));
-            VideoChat.socket.emit("token", roomHash);
-        },
-
-        // When we receive the ephemeral token back from the server.
-        onToken: function (callback) {
-            logIt("onToken");
-            return function (token) {
-                logIt("<<< Received token");
-                // Set up a new RTCPeerConnection using the token's iceServers.
-                VideoChat.peerConnection = new RTCPeerConnection({
-                    iceServers: token.iceServers,
-                });
-                // Add the local video stream to the peerConnection.
-                VideoChat.localStream.getTracks().forEach(function (track) {
-                    VideoChat.peerConnection.addTrack(track, VideoChat.localStream);
-                });
-                // Add general purpose data channel to peer connection,
-                // used for text chats, captions, and toggling sending captions
-                dataChannel = VideoChat.peerConnection.createDataChannel("chat", {
-                    negotiated: true,
-                    // both peers must have same id
-                    id: 0,
-                });
-                // Called when dataChannel is successfully opened
-                dataChannel.onopen = function (event) {
-                    logIt("dataChannel opened");
-                };
-                // Handle different dataChannel types
-                dataChannel.onmessage = function (event) {
-                    const receivedData = event.data;
-                    // First 4 chars represent data type
-                    const dataType = receivedData.substring(0, 4);
-                    const cleanedMessage = receivedData.slice(4);
-                    if (dataType === "mes:") {
-                        handleReceiveMessage(cleanedMessage);
-                    } else if (dataType === "cap:") {
-                        receiveCaptions(cleanedMessage);
-                    } else if (dataType === "tog:") {
-                        toggleSendCaptions();
-                    }
-                };
-                // Set up callbacks for the connection generating iceCandidates or
-                // receiving the remote media stream.
-                VideoChat.peerConnection.onicecandidate = VideoChat.onIceCandidate;
-                VideoChat.peerConnection.onaddstream = VideoChat.onAddStream;
-                // Set up listeners on the socket
-                VideoChat.socket.on("candidate", VideoChat.onCandidate);
-                VideoChat.socket.on("answer", VideoChat.onAnswer);
-                VideoChat.socket.on("requestToggleCaptions", () => toggleSendCaptions());
-                VideoChat.socket.on("receiveCaptions", (captions) =>
-                    receiveCaptions(captions)
-                );
-                // Called when there is a change in connection state
-                VideoChat.peerConnection.oniceconnectionstatechange = function (event) {
-                    switch (VideoChat.peerConnection.iceConnectionState) {
-                        case "connected":
-                            logIt("connected");
-                            // Once connected we no longer have a need for the signaling server, so disconnect
-                            VideoChat.socket.disconnect();
-                            break;
-                        case "disconnected":
-                            logIt("disconnected");
-                        case "failed":
-                            logIt("failed");
-                            // VideoChat.socket.connect
-                            // VideoChat.createOffer();
-                            // Refresh page if connection has failed
-                            location.reload();
-                            break;
-                        case "closed":
-                            logIt("closed");
-                            break;
-                    }
-                };
-                callback();
-            };
-        },
-
-        // When the peerConnection generates an ice candidate, send it over the socket to the peer.
-        onIceCandidate: function (event) {
-            logIt("onIceCandidate");
-            if (event.candidate) {
-                logIt(
-                    `<<< Received local ICE candidate from STUN/TURN server (${event.candidate.address})`
-                );
-                if (VideoChat.connected) {
-                    logIt(`>>> Sending local ICE candidate (${event.candidate.address})`);
-                    VideoChat.socket.emit(
-                        "candidate",
-                        JSON.stringify(event.candidate),
-                        roomHash
-                    );
-                } else {
-                    // If we are not 'connected' to the other peer, we are buffering the local ICE candidates.
-                    // This most likely is happening on the "caller" side.
-                    // The peer may not have created the RTCPeerConnection yet, so we are waiting for the 'answer'
-                    // to arrive. This will signal that the peer is ready to receive signaling.
-                    VideoChat.localICECandidates.push(event.candidate);
-                }
-            }
-        },
-
-        // When receiving a candidate over the socket, turn it back into a real
-        // RTCIceCandidate and add it to the peerConnection.
-        onCandidate: function (candidate) {
-            // Update caption text
-            updateState({ captionText: "Found other user... connecting" });
-            rtcCandidate = new RTCIceCandidate(JSON.parse(candidate));
-            logIt(
-                `onCandidate <<< Received remote ICE candidate (${rtcCandidate.address} - ${rtcCandidate.relatedAddress})`
-            );
-            VideoChat.peerConnection.addIceCandidate(rtcCandidate);
-        },
-
-        // Create an offer that contains the media capabilities of the browser.
-        createOffer: function () {
-            logIt("createOffer >>> Creating offer...");
-            VideoChat.peerConnection.createOffer(
-                function (offer) {
-                    // If the offer is created successfully, set it as the local description
-                    // and send it over the socket connection to initiate the peerConnection
-                    // on the other side.
-                    VideoChat.peerConnection.setLocalDescription(offer);
-                    VideoChat.socket.emit("offer", JSON.stringify(offer), roomHash);
-                },
-                function (err) {
-                    logIt("failed offer creation");
-                    logIt(err, true);
-                }
-            );
-        },
-
-        // Create an answer with the media capabilities that both browsers share.
-        // This function is called with the offer from the originating browser, which
-        // needs to be parsed into an RTCSessionDescription and added as the remote
-        // description to the peerConnection object. Then the answer is created in the
-        // same manner as the offer and sent over the socket.
-        createAnswer: function (offer) {
-            logIt("createAnswer");
-            return function () {
-                logIt(">>> Creating answer...");
-                rtcOffer = new RTCSessionDescription(JSON.parse(offer));
-                VideoChat.peerConnection.setRemoteDescription(rtcOffer);
-                VideoChat.peerConnection.createAnswer(
-                    function (answer) {
-                        VideoChat.peerConnection.setLocalDescription(answer);
-                        VideoChat.socket.emit("answer", JSON.stringify(answer), roomHash);
-                    },
-                    function (err) {
-                        logIt("Failed answer creation.");
-                        logIt(err, true);
-                    }
-                );
-            };
-        },
-
-
-        // Called when a stream is added to the peer connection
-        onAddStream: function (event) {
-            logIt("onAddStream <<< Received new stream from remote. Adding it...");
-            // Update remote video source
-            VideoChat.remoteVideo.srcObject = event.stream;
-            // Close the initial share url snackbar
-            Snackbar.close();
-            // Remove the loading gif from video
-            VideoChat.remoteVideo.style.background = "none";
-            // Update connection status
-            VideoChat.connected = true;
-            // Hide caption status text
-            captionText.fadeOut();
-            // Reposition local video after a second, as there is often a delay
-            // between adding a stream and the height of the video div changing
-            setTimeout(() => rePositionLocalVideo(), 500);
-            // var timesRun = 0;
-            // var interval = setInterval(function () {
-            //   timesRun += 1;
-            //   if (timesRun === 10) {
-            //     clearInterval(interval);
-            //   }
-            //   rePositionLocalVideo();
-            // }, 300);
-        },
-    }
-
-    // Swap camera / screen share
-    const swap = () => {
-        // Handle swap video before video call is connected
-        if (!VideoChat.connected) {
-            alert("You must join a call before you can share your screen.");
-            return;
-        }
-        // Store swap button icon and text
-        const swapIcon = document.getElementById("swap-icon");
-        const swapText = document.getElementById("swap-text");
-        // If mode is camera then switch to screen share
-        if (mode === "camera") {
-            // Show accept screenshare snackbar
-            Snackbar.show({
-                text:
-                    "Please allow screen share. Click the middle of the picture above and then press share.",
-                width: "400px",
-                pos: "bottom-center",
-                actionTextColor: "#616161",
-                duration: 50000,
-            });
-            // Request screen share, note we dont want to capture audio
-            // as we already have the stream from the Webcam
-            navigator.mediaDevices
-                .getDisplayMedia({
-                    video: true,
-                    audio: false,
-                })
-                .then(function (stream) {
-                    // Close allow screenshare snackbar
-                    Snackbar.close();
-                    // Change display mode
-                    updateState({ mode: 'screen' });
-                    // Update swap button icon and text
-                    swapIcon.classList.remove("fa-desktop");
-                    swapIcon.classList.add("fa-camera");
-                    swapText.innerText = "Share Webcam";
-                    switchStreamHelper(stream);
-                })
-                .catch(function (err) {
-                    logIt(err);
-                    logIt("Error sharing screen");
-                    Snackbar.close();
-                });
-            // If mode is screenshare then switch to webcam
-        } else {
-            // Stop the screen share track
-            localVideo.srcObject.getTracks().forEach((track) => track.stop());
-            // Get webcam input
-            navigator.mediaDevices
-                .getUserMedia({
-                    video: true,
-                    audio: true,
-                })
-                .then(function (stream) {
-                    // Change display mode
-                    updateState({ mode: 'camera' });
-                    // Update swap button icon and text
-                    swapIcon.classList.remove("fa-camera");
-                    swapIcon.classList.add("fa-desktop");
-                    swapText.innerText = "Share Screen";
-                    switchStreamHelper(stream);
-                });
-        }
-    }
-
-    // Swap current video track with passed in stream
-    const switchStreamHelper = (stream) => {
-        // Get current video track
-        let videoTrack = stream.getVideoTracks()[0];
-        // Add listen for if the current track swaps, swap back
-        videoTrack.onended = function () {
-            swap();
-        };
-        if (VideoChat.connected) {
-            // Find sender
-            const sender = findSenderByKind(videoTrack.kind);
-            // Replace sender track
-            sender.replaceTrack(videoTrack);
-        }
-        // Update local video stream
-        VideoChat.localStream = videoTrack;
-        // Update local video object
-        localVideo.srcObject = stream;
-        // Unpause video on swap
-        if (isPaused) {
-            pauseVideo();
-        }
     }
 
     const rePositionLocalVideo = () => {
         // Get position of remote video
         if (!remoteVideo) return;
-
-        const isMobileOrTablet = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-            navigator.userAgent
-        )
 
         let bounds = remoteVideo.getBoundingClientRect();
 
@@ -435,39 +95,6 @@ export const Chat = () => {
         // Show chat if hidden
         if (!showChat) {
             toggleChat();
-        }
-    }
-
-    //Picture in picture
-    const togglePictureInPicture = () => {
-        const isPipSupported = (
-            "pictureInPictureEnabled" in document ||
-            remoteVideoVanilla.webkitSetPresentationMode
-        )
-
-        if (isPipSupported) {
-            if (document.pictureInPictureElement) {
-                document.exitPictureInPicture().catch((error) => {
-                    logIt("Error exiting pip.");
-                    logIt(error);
-                });
-            } else if (remoteVideoVanilla.webkitPresentationMode === "inline") {
-                remoteVideoVanilla.webkitSetPresentationMode("picture-in-picture");
-            } else if (
-                remoteVideoVanilla.webkitPresentationMode === "picture-in-picture"
-            ) {
-                remoteVideoVanilla.webkitSetPresentationMode("inline");
-            } else {
-                remoteVideoVanilla.requestPictureInPicture().catch((error) => {
-                    alert(
-                        "You must be connected to another person to enter picture in picture."
-                    );
-                });
-            }
-        } else {
-            alert(
-                "Picture in picture is not supported in your browser. Consider using Chrome or Safari."
-            );
         }
     }
 
@@ -556,17 +183,6 @@ export const Chat = () => {
         rePositionCaptions();
     }
 
-    const isWebRTCSupported =
-        navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia ||
-        navigator.msGetUserMedia ||
-        window.RTCPeerConnection;
-
-    const logIt = (message, error) => {
-        console.log(message);
-    }
-
     const receiveCaptions = (captions) => {
         updateState({ captionText: '' });
         // Other user is not using chrome
@@ -599,175 +215,13 @@ export const Chat = () => {
         return senders.find(sender => (sender.track.kind === kind));
     }
 
-    // Show and hide chat
-    const toggleChat = () => updateState({ showChat: !showChat });
-
-    const pauseVideo = () => {
-        const sender = findSenderByKind(video);
-        if (sender) {
-            updateState({ isPaused: !sender.track.enabled })
-            sender.track.enabled = isPaused;
-            updateState({ isPaused: !isPaused })
-            // update pause button icon and text
-            if (videoIsPaused) {
-                // localVideoText.show();
-            } else {
-                // setTimeout(() => localVideoText.fadeOut(), 2000);
-            }
-        }
-    }
-
-    const renderHeader = () => (
-        <div id="header">
-            <a target="_blank" href="/">
-                <img src="/images/logo.svg" alt="Neon" width="48" height="48" />
-                <p>Zipcall</p>
-            </a>
-        </div>
-    )
-
-    const renderRemoteVideoText = () => {
-        // fadeOut this text when live caption ends
-        return (
-            <p id="remote-video-text" />
-        )
-    }
-
-    const renderRemoteVideo = () => {
-        return (
-            <video id="remote-video" autoPlay playsInline ref={remoteVideoRef} />
-        )
-    }
+    const renderHeader = () => <Header />;
+    const renderRemoteVideo = () => <RemoteVideo remoteVideoRef={remoteVideoRef} />
 
     const renderLocalVideo = () => {
-        let text = 'No webcam input';
-
-        switch (true) {
-            case (isPaused):
-                text = 'Video is paused';
-                break;
-            default:
-                break;
-        }
-        return (
-            <div id="moveable" ref={moveableRef}>
-                <p id="local-video-text">{text}</p>
-                <video id="local-video" autoPlay muted playsInline ref={localVideoRef} />
-            </div>
-        )
+        const childProps = { localVideoRef, isPaused, moveableRef };
+        return <LocalVideo {...childProps} />
     }
-
-    const renderChat = () => {
-        if (!showChat) return null; // fade in and out
-
-        const onKeyPress = (event) => {
-            if (event.keyCode === 13) {
-                // Prevent page refresh on enter
-                event.preventDefault();
-                let message = event.target.value;
-                // Prevent cross site scripting
-                message = message.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                // Make links clickable
-                message = message.autoLink();
-                // Send message over data channel
-                dataChannel.send(`mes:${message}`);
-                // Add message to screen
-                addMessageToScreen({ message, isOwnMessage: true });
-                // Auto scroll chat down
-                chatZone.scrollTop(chatZone[0].scrollHeight);
-                // Clear chat input
-                event.target.value = "";
-            }
-        }
-
-        return (
-            <div id="entire-chat">
-                <div id="chat-zone">
-                    <div className="chat-messages"></div>
-                </div>
-                <form className="compose">
-                    <input type="text" placeholder="Type a message" onKeyPress={onKeyPress} />
-                </form>
-            </div>
-        )
-    }
-
-    const muteMicrophone = () => {
-        const sender = findSenderByKind('audio');
-        if (sender) {
-            updateState({ isMuted: !sender.track.enabled })
-            sender.track.enabled = isMuted;
-            updateState({ isMuted: !isMuted })
-        }
-    }
-
-    const renderButtons = () => {
-        const buttons = [
-            {
-                onClick: muteMicrophone,
-                baseId: 'mic',
-                enableText: 'Mute',
-                enableIcon: 'microphone',
-                disableText: 'Unmute',
-                disableIcon: 'microphone-slash',
-            },
-            // {
-            //     onClick: openFullScreen,
-            //     baseId: '',
-            //     enableIcon: 'compress',
-            //     enableText: 'Fullscreen'
-            // },
-            {
-                onClick: pauseVideo,
-                baseId: 'video',
-                enableText: 'Pause Video',
-                enableIcon: 'video',
-                disableText: 'Unpause Video',
-                disableIcon: 'video-slash',
-            },
-            {
-                onClick: swap,
-                baseId: 'swap',
-                enableText: 'Share Screen',
-                enableIcon: 'desktop',
-            },
-            {
-                onClick: toggleChat,
-                baseId: 'chat',
-                enableText: 'Show Chat',
-                enableIcon: 'comment',
-                disableText: 'Hide Chat',
-                disableIcon: 'comment-slash',
-            },
-            {
-                onClick: togglePictureInPicture,
-                baseId: 'pip',
-                enableText: 'Toggle Picture in Picture',
-                enableIcon: 'external-link-alt',
-            },
-            {
-                onClick: requestToggleCaptions,
-                baseId: 'caption',
-                enableText: 'Start Live Caption',
-                enableIcon: 'closed-captioning',
-                disableText: 'End Live Caption',
-                disableIcon: 'closed-captioning-slash',
-            },
-            {
-                onClick: startNewCall,
-                baseId: 'end-call',
-                enableText: 'End Call',
-                enableIcon: 'phone-slash',
-            },
-        ]
-
-        return (
-            <div className='multi-button'>
-                {buttons.map(button => <Button key={button.baseId} button={button} />)}
-            </div>
-        )
-    }
-
 
     // When a browser receives an offer, set up a callback to be run when the
     // ephemeral token is returned from Twilio.
@@ -804,28 +258,6 @@ export const Chat = () => {
             logIt("Initiating call");
             VideoChat.startCall();
         }
-    }
-
-    const requestToggleCaptions = () => {
-        // Handle requesting captions before connected
-        if (!VideoChat.connected) {
-            alert("You must be connected to a peer to use Live Caption");
-            return;
-        }
-        if (!isReceivingCaptions) {
-            Snackbar.show({
-                text:
-                    "This is an experimental feature. Live caption requires the other user to be using Chrome",
-                width: "400px",
-                pos: "bottom-center",
-                actionTextColor: "#616161",
-                duration: 10000,
-            });
-        }
-
-        // Send request to get captions over data channel
-        dataChannel.send("tog:");
-        updateState({ isReceivingCaptions: !isReceivingCaptions });
     }
 
     const toggleSendCaptions = () => {
@@ -926,10 +358,11 @@ export const Chat = () => {
         _delay = setInterval(delayCheck, 500);
     }
 
+    const renderButtons = () => <Buttons />;
+
     return (
         <div onMouseMove={onMouseMove}>
             {renderHeader()}
-            {renderRemoteVideoText()}
             {renderRemoteVideo()}
             {renderLocalVideo()}
             {renderChat()}

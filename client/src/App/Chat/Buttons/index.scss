@@ -1,0 +1,65 @@
+@import './Button/index.scss';
+
+/*Buttons*/
+.multi-button button {
+    border: none;
+    font-size: 1.5rem;
+    transition: all 0.3s ease-in-out;
+    color: gray;
+    background: transparent;
+    cursor: pointer;
+    padding: 7px;
+    border-radius: 5px;
+  }
+  
+  button:focus {
+    outline: none;
+  }
+  
+  button:hover {
+    color: white;
+  }
+  
+  .multi-button {
+    position: absolute;
+    left: calc(7.5vw - 40px);
+    top: 50%;
+    -ms-transform: translate(0%, -50%);
+    transform: translate(0%, -50%);
+    z-index: 999;
+    border-radius: 10px;
+    background: #16171a;
+    box-shadow: 9px 9px 16px #0a0b0c, -9px -9px 16px #222328;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    /* grid-gap: 0.2rem; */
+    width: 40px;
+  }
+  
+  .HoverState {
+    color: white;
+    font-family: "Heebo", sans-serif;
+    font-size: 0.8rem;
+    position: absolute;
+    left: 60px;
+    white-space: nowrap;
+    top: 0px;
+    font-weight: bold;
+    background: #16171a;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+  .buttonContainer {
+    position: relative;
+    margin: 0 auto;
+  }
+  
+  /*.fa-phone-slash {*/
+  /*  color: #470000;*/
+  /*}*/
+  
+  /*End buttons*/
+  
