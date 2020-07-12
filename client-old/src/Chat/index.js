@@ -167,17 +167,17 @@ const Chat = () => {
                 });
                 // Add general purpose data channel to peer connection,
                 // used for text chats, captions, and toggling sending captions
-                dataChanel = VideoChat.peerConnection.createDataChannel("chat", {
+                dataChannel = VideoChat.peerConnection.createDataChannel("chat", {
                     negotiated: true,
                     // both peers must have same id
                     id: 0,
                 });
                 // Called when dataChannel is successfully opened
-                dataChanel.onopen = function (event) {
+                dataChannel.onopen = function (event) {
                     logIt("dataChannel opened");
                 };
                 // Handle different dataChannel types
-                dataChanel.onmessage = function (event) {
+                dataChannel.onmessage = function (event) {
                     const receivedData = event.data;
                     // First 4 chars represent data type
                     const dataType = receivedData.substring(0, 4);
