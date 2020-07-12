@@ -11,6 +11,7 @@
     "node-snackbar": "^0.1.16",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-draggable": "^4.4.3",
     "react-scripts": "3.4.1",
     "socket.io-client": "^2.3.0"
   },

@@ -1,6 +1,10 @@
 import React from 'react';
 import { Button } from './Button'
-import { requestToggleCaptions, pauseVideo, swap, togglePictureInPicture } from './_util/requestToggleCaptions';
+import { requestToggleCaptions } from './_util/requestToggleCaptions';
+import { pauseVideo, } from './_util/pauseVideo';
+import { swap } from './_util/swap';
+import { togglePictureInPicture } from './_util/togglePictureInPicture';
+import { toggleChat } from './_util/toggleChat';
 
 export const Buttons = (props) => {
 

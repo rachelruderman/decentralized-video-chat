@@ -3,12 +3,13 @@ import DetectRTC from 'detectrtc';
 import Snackbar from 'node-snackbar';
 import io from 'socket.io-client';
 import { Header } from './Header';
-import { isWebRTCSupported } from './_util/isWebRtcSupported';
+import { isWebRtcSupported } from './_util/device/isWebRtcSupported';
 import { Buttons } from './Buttons';
 import { logIt } from './_util/logIt';
-import { isMobileOrTablet } from './_util/isMobileOrTablet';
+import { isMobileOrTablet } from './_util/device/isMobileOrTablet';
 import { RemoteVideo } from './RemoteVideo';
 import { LocalVideo } from './LocalVideo';
+import { getBrowserName } from './_util/device/getBrowserName';
 
 export const Chat = () => {
 
@@ -147,25 +148,7 @@ export const Chat = () => {
         };
         VideoChat.recognition.start();
     }
-    // Get name of browser session using user agent
-    const getBrowserName = () => {
-        const { userAgent } = window.navigator;
 
-        if (userAgent.includes('MSIE')) {
-            return 'Unknown';
-        }
-
-        const browsers = [
-            'Firefox',
-            'Opera',
-            'Chrome',
-            'Safari'
-        ];
-
-        const browser = browsers.find(browser => userAgent.includes(browser));
-
-        return (browser || 'Unknown');
-    }
 
     // Element vars
     const remoteVideoVanilla = document.getElementById("remote-video");
@@ -285,7 +268,7 @@ export const Chat = () => {
             }
         }
 
-        if (!isWebRTCSupported || browserName === "MSIE") {
+        if (!isWebRtcSupported || browserName === "MSIE") {
             window.location.href = "/notsupported";
         }
 
