@@ -2,20 +2,19 @@
   "name": "video-chat2",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "react": "npx babel --watch src --out-dir ./public/react --presets react-app/prod",
+    "start": "nodemon -r esm index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "See License",
   "dependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-react-app": "^3.1.2",
     "dotenv": "^8.1.0",
+    "esm": "^3.2.25",
     "express": "^4.17.1",
     "heroku-ssl-redirect": "0.0.4",
+    "nodemon": "^2.0.4",
     "socket.io": "^2.2.0",
     "twilio": "^3.34.0"
   },
