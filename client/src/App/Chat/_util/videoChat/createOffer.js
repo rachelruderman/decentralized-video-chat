@@ -1,4 +1,4 @@
-import { logIt } from "../logIt";
+import { logIt } from "../error/logIt";
 
 // Create an offer that contains the media capabilities of the browser.
 export const createOffer = () => {

@@ -1,4 +1,4 @@
-import { logIt } from "../logIt";
+import { logIt } from "../error/logIt";
 
 export const requestMediaStream = async () => {
     logIt("requestMediaStream");

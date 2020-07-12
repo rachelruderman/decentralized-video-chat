@@ -1,6 +1,6 @@
 // When receiving a candidate over the socket, turn it back into a real
 
-import { logIt } from "../logIt";
+import { logIt } from "../error/logIt";
 
 // RTCIceCandidate and add it to the peerConnection.
 export const onCandidate = ({ candidate, updateState }) => {

@@ -1,4 +1,4 @@
-import { logIt } from "../logIt";
+import { logIt } from "../error/logIt";
 
 // Called when a video stream is added to VideoChat
 export const onMediaStream = (stream) => {

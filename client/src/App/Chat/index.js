@@ -5,11 +5,12 @@ import io from 'socket.io-client';
 import { Header } from './Header';
 import { isWebRtcSupported } from './_util/device/isWebRtcSupported';
 import { Buttons } from './Buttons';
-import { logIt } from './_util/logIt';
 import { isMobileOrTablet } from './_util/device/isMobileOrTablet';
 import { RemoteVideo } from './RemoteVideo';
 import { LocalVideo } from './LocalVideo';
 import { getBrowserName } from './_util/device/getBrowserName';
+import { EntireChat } from './EntireChat';
+import history from './history';
 
 export const Chat = () => {
 
@@ -99,55 +100,6 @@ export const Chat = () => {
         }
     }
 
-    // Start speech recognition
-    const startSpeech = () => {
-        try {
-            var SpeechRecognition =
-                window.SpeechRecognition || window.webkitSpeechRecognition;
-            VideoChat.recognition = new SpeechRecognition();
-            // VideoChat.recognition.lang = "en";
-        } catch (e) {
-            sendingCaptions = false;
-            logIt(e);
-            logIt("error importing speech library");
-            // Alert other user that they cannon use live caption
-            dataChannel.send("cap:notusingchrome");
-            return;
-        }
-        // recognition.maxAlternatives = 3;
-        VideoChat.recognition.continuous = true;
-        // Show results that aren't final
-        VideoChat.recognition.interimResults = true;
-        var finalTranscript;
-        VideoChat.recognition.onresult = (event) => {
-            let interimTranscript = "";
-            for (let i = event.resultIndex, len = event.results.length; i < len; i++) {
-                var transcript = event.results[i][0].transcript;
-                if (event.results[i].isFinal) {
-                    finalTranscript += transcript;
-                } else {
-                    interimTranscript += transcript;
-                    var charsToKeep = interimTranscript.length % 100;
-                    // Send captions over data chanel,
-                    // subtracting as many complete 100 char slices from start
-                    dataChannel.send(
-                        "cap:" +
-                        interimTranscript.substring(interimTranscript.length - charsToKeep)
-                    );
-                }
-            }
-        };
-        VideoChat.recognition.onend = function () {
-            logIt("on speech recording end");
-            // Restart speech recognition if user has not stopped it
-            if (sendingCaptions) {
-                startSpeech();
-            } else {
-                VideoChat.recognition.stop();
-            }
-        };
-        VideoChat.recognition.start();
-    }
 
 
     // Element vars
@@ -204,43 +156,6 @@ export const Chat = () => {
     const renderLocalVideo = () => {
         const childProps = { localVideoRef, isPaused, moveableRef };
         return <LocalVideo {...childProps} />
-    }
-
-    // When a browser receives an offer, set up a callback to be run when the
-    // ephemeral token is returned from Twilio.
-    const onOffer = (offer) => {
-        logIt("onOffer <<< Received offer");
-        VideoChat.socket.on(
-            "token",
-            VideoChat.onToken(VideoChat.createAnswer(offer))
-        );
-        VideoChat.socket.emit("token", roomHash);
-    }
-
-    // When an answer is received, add it to the peerConnection as the remote description.
-    const onAnswer = (answer) => {
-        logIt("onAnswer <<< Received answer");
-        const rtcAnswer = new RTCSessionDescription(JSON.parse(answer));
-        // Set remote description of RTCSession
-        VideoChat.peerConnection.setRemoteDescription(rtcAnswer);
-        // The caller now knows that the callee is ready to accept new ICE candidates, so sending the buffer over
-        VideoChat.localICECandidates.forEach((candidate) => {
-            logIt(`>>> Sending local ICE candidate (${candidate.address})`);
-            // Send ice candidate over websocket
-            VideoChat.socket.emit("candidate", JSON.stringify(candidate), roomHash);
-        });
-        // Reset the buffer of local ICE candidates. This is not really needed, but it's good practice
-        VideoChat.localICECandidates = [];
-    }
-
-    // When we are ready to call, enable the Call button.
-    const readyToCall = () => {
-        logIt("readyToCall");
-        // First to join call will most likely initiate call
-        if (VideoChat.willInitiateCall) {
-            logIt("Initiating call");
-            VideoChat.startCall();
-        }
     }
 
     const toggleSendCaptions = () => {
@@ -343,12 +258,13 @@ export const Chat = () => {
 
     const renderButtons = () => <Buttons />;
 
+    const renderEntireChat = () => <EntireChat />;
     return (
         <div onMouseMove={onMouseMove}>
             {renderHeader()}
             {renderRemoteVideo()}
             {renderLocalVideo()}
-            {renderChat()}
+            {renderEntireChat()}
             {renderButtons()}
         </div>
     )
