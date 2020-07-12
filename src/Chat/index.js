@@ -866,7 +866,7 @@ const Chat = () => {
 
     const startUp = () => {
         //  Try and detect in-app browsers and redirect
-        var ua = navigator.userAgent || navigator.vendor || window.opera;
+        const ua = navigator.userAgent || navigator.vendor || window.opera;
         const isInAppBrowser = DetectRTC.isMobileDevice && ['FBAN', 'FBAV', 'Instagram'].includes(ua);
         const isIos = DetectRTC.osName === "iOS";
 
@@ -892,27 +892,9 @@ const Chat = () => {
         VideoChat.requestMediaStream();
 
         // Make local video draggable
-        $("#moveable").draggable({ containment: "window" });
-
-        // Fade out / show UI on mouse move
-        var timedelay = 1;
-        function delayCheck() {
-            if (timedelay === 5) {
-                // $(".multi-button").fadeOut();
-                $("#header").fadeOut();
-                timedelay = 1;
-            }
-            timedelay = timedelay + 1;
+        if (moveable && moveable.draggable) {
+            moveable.draggable({ containment: "window" });
         }
-        $(document).mousemove(function () {
-            $(".multi-button").fadeIn();
-            $("#header").fadeIn();
-            $(".multi-button").style = "";
-            timedelay = 1;
-            clearInterval(_delay);
-            _delay = setInterval(delayCheck, 500);
-        });
-        _delay = setInterval(delayCheck, 500);
 
         // Show accept webcam snackbar
         Snackbar.show({
@@ -940,6 +922,18 @@ const Chat = () => {
         navigator.mediaDevices.ondevicechange = () => window.location.reload();
     }
 
+    // Fade out / show UI on mouse move
+    let timedelay = 1;
+    const delayCheck = () => {
+        if (timedelay === 5) {
+            // $(".multi-button").fadeOut();
+            $("#header").fadeOut();
+            timedelay = 1;
+        }
+        timedelay = timedelay + 1;
+    }
+    _delay = setInterval(delayCheck, 500);
+
     // Reposition captions to bottom of video
     const rePositionCaptions = () => {
         // Get remote video position
@@ -951,8 +945,17 @@ const Chat = () => {
         // captionText.css(bounds);
     }
 
+    const onMouseMove = () => {
+        $(".multi-button").fadeIn();
+        $("#header").fadeIn();
+        $(".multi-button").style = "";
+        timedelay = 1;
+        clearInterval(_delay);
+        _delay = setInterval(delayCheck, 500);
+    }
+
     return (
-        <div>
+        <div onMouseMove={onMouseMove}>
             {renderHeader()}
             {renderRemoteVideoText()}
             {renderRemoteVideo()}

@@ -862,27 +862,9 @@ var Chat = function Chat() {
         VideoChat.requestMediaStream();
 
         // Make local video draggable
-        $("#moveable").draggable({ containment: "window" });
-
-        // Fade out / show UI on mouse move
-        var timedelay = 1;
-        function delayCheck() {
-            if (timedelay === 5) {
-                // $(".multi-button").fadeOut();
-                $("#header").fadeOut();
-                timedelay = 1;
-            }
-            timedelay = timedelay + 1;
+        if (moveable && moveable.draggable) {
+            moveable.draggable({ containment: "window" });
         }
-        $(document).mousemove(function () {
-            $(".multi-button").fadeIn();
-            $("#header").fadeIn();
-            $(".multi-button").style = "";
-            timedelay = 1;
-            clearInterval(_delay);
-            _delay = setInterval(delayCheck, 500);
-        });
-        _delay = setInterval(delayCheck, 500);
 
         // Show accept webcam snackbar
         Snackbar.show({
@@ -909,6 +891,18 @@ var Chat = function Chat() {
         };
     };
 
+    // Fade out / show UI on mouse move
+    var timedelay = 1;
+    var delayCheck = function delayCheck() {
+        if (timedelay === 5) {
+            // $(".multi-button").fadeOut();
+            $("#header").fadeOut();
+            timedelay = 1;
+        }
+        timedelay = timedelay + 1;
+    };
+    _delay = setInterval(delayCheck, 500);
+
     // Reposition captions to bottom of video
     var rePositionCaptions = function rePositionCaptions() {
         // Get remote video position
@@ -920,9 +914,18 @@ var Chat = function Chat() {
         // captionText.css(bounds);
     };
 
+    var onMouseMove = function onMouseMove() {
+        $(".multi-button").fadeIn();
+        $("#header").fadeIn();
+        $(".multi-button").style = "";
+        timedelay = 1;
+        clearInterval(_delay);
+        _delay = setInterval(delayCheck, 500);
+    };
+
     return React.createElement(
         'div',
-        null,
+        { onMouseMove: onMouseMove },
         renderHeader(),
         renderRemoteVideoText(),
         renderRemoteVideo(),
