@@ -1,4 +1,4 @@
-import { logIt } from "../error/logIt";
+import { logIt } from "../../error/logIt";
 
 // Called when a stream is added to the peer connection
 export const onAddStream = (event) => {
@@ -24,4 +24,4 @@ export const onAddStream = (event) => {
     //   }
     //   rePositionLocalVideo();
     // }, 300);
-},
+};

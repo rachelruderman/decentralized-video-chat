@@ -1,21 +1,16 @@
 import React, { useRef, useState } from 'react';
-import Snackbar from 'node-snackbar';
-import io from 'socket.io-client';
 import { Header } from './Header';
 // import { Buttons } from './Buttons';
 // import { isMobileOrTablet } from './_util/device/isMobileOrTablet';
 // import { RemoteVideo } from './RemoteVideo';
 // import { LocalVideo } from './LocalVideo';
-import { setDocumentTitle } from './_util/setDocumentTitle';
-import { redirectUnsupportedBrowsers } from './_util/device/redirectUnsupportedBrowsers';
 import { useInitializeVideoChat } from './_hooks/useInitializeVideoChat';
 // import { EntireChat } from './EntireChat';
-// import { createBrowserHistory } from 'history';
-// const history = createBrowserHistory();
 
 export const Chat = () => {
 
     const initialState = {
+        isInitialized: false,
         isMuted: false,
         isPaused: false,
         isReceivingCaptions: false,
@@ -51,15 +46,6 @@ export const Chat = () => {
 
     useInitializeVideoChat({ localVideo, remoteVideo })
 
-    const VideoChat = {
-        connected: false,
-        willInitiateCall: false,
-        localICECandidates: [],
-        socket: io('ws://localhost:3001'),
-        remoteVideo,
-        recognition: undefined,
-    }
-
     // const rePositionLocalVideo = () => {
     //     // Get position of remote video
     //     if (!remoteVideo) return;
@@ -86,7 +72,6 @@ export const Chat = () => {
 
     // // Element vars
     // const remoteVideoVanilla = document.getElementById("remote-video");
-    // const roomHash = url.substring(url.lastIndexOf("/") + 1).toLowerCase();
 
     // // Called when window is resized
     // const windowResized = () => {
@@ -108,17 +93,6 @@ export const Chat = () => {
     //     rePositionCaptions();
     // }
 
-    // // Called when socket receives message that room is full
-    // const chatRoomFull = () => {
-    //     alert(
-    //         "Chat room is full. Check to make sure you don't have multiple open tabs, or try with a new room link"
-    //     );
-    //     // Exit room and redirect
-    //     startNewCall();
-    // }
-
-    // const startNewCall = () => history.push('/newcall');
-
     const updateState = (data) => setState(prevState => ({ ...prevState, ...data }));
 
     // const findSenderByKind = (kind) => {
@@ -136,10 +110,6 @@ export const Chat = () => {
 
 
     const startUp = () => {
-
-
-        // // get webcam on load
-        // VideoChat.requestMediaStream();
 
         // // Show accept webcam snackbar
         // Snackbar.show({

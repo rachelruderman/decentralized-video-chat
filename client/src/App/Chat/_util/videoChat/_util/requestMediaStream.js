@@ -1,17 +1,17 @@
-import { logIt } from "../error/logIt";
+import { logIt } from "../../error/logIt";
+import { VideoChat } from "..";
 
 export const requestMediaStream = async () => {
     logIt("requestMediaStream");
-    rePositionLocalVideo();
+    // rePositionLocalVideo();
 
     try {
-        await navigator.mediaDevices.getUserMedia({
+        const stream = await navigator.mediaDevices.getUserMedia({
             video: true,
             audio: true,
         })
+
         VideoChat.onMediaStream(stream);
-        localVideoText.text("Drag Me");
-        setTimeout(() => localVideoText.fadeOut(), 5000);
     }
     catch (error) {
         logIt(error);
@@ -19,6 +19,6 @@ export const requestMediaStream = async () => {
             "Failed to get local webcam video, check webcam privacy settings"
         );
         // Keep trying to get user media
-        setTimeout(VideoChat.requestMediaStream, 1000);
+        setTimeout(requestMediaStream, 1000);
     }
-},
+};

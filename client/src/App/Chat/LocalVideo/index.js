@@ -1,18 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 
-export const LocalVideo = ({ moveableRef, localVideoRef, isPaused }) => {
+export const LocalVideo = ({ moveableRef, localVideoRef, isPaused, isInitialized }) => {
 
-    const renderText = () => {
-        let text = 'No webcam input';
+    const [text, setText] = useState('No webcam input');
 
+    useEffect(() => {
         switch (true) {
             case (isPaused):
-                text = 'Video is paused';
+                setText('Video is paused');
+                break;
+            case (isInitialized):
+                setText('Drag me');
+                // localVideoText.fadeOut(), 5000);
                 break;
             default:
                 break;
         }
+    }, [isInitialized, isPaused])
+
+
+    const renderText = () => {
         return <p id="local-video-text">{text}</p>
     }
 

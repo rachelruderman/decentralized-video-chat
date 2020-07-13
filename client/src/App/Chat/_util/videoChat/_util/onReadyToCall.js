@@ -1,4 +1,4 @@
-import { logIt } from "../error/logIt";
+import { logIt } from "../../error/logIt";
 
 // When we are ready to call, enable the Call button.
 export const onReadyToCall = () => {

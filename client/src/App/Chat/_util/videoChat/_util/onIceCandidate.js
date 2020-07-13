@@ -1,3 +1,8 @@
+import { logIt } from "../../error/logIt";
+import { VideoChat } from "..";
+
+let roomHash;
+
 // When the peerConnection generates an ice candidate, send it over the socket to the peer.
 export const onIceCandidate = (event) => {
     logIt("onIceCandidate");
@@ -20,4 +25,4 @@ export const onIceCandidate = (event) => {
             VideoChat.localICECandidates.push(event.candidate);
         }
     }
-},
+};

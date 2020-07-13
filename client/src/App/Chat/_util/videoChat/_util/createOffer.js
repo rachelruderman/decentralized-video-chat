@@ -1,7 +1,8 @@
-import { logIt } from "../error/logIt";
+import { logIt } from "../../error/logIt";
+import { VideoChat } from "..";
 
 // Create an offer that contains the media capabilities of the browser.
-export const createOffer = () => {
+export const createOffer = ({ roomHash }) => {
     logIt("createOffer >>> Creating offer...");
 
     const onSuccess = (offer) => {
@@ -18,4 +19,4 @@ export const createOffer = () => {
     }
 
     VideoChat.peerConnection.createOffer(onSuccess, onError)
-},
+};
