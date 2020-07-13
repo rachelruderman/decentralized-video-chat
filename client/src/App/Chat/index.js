@@ -56,7 +56,7 @@ export const Chat = () => {
         connected: false,
         willInitiateCall: false,
         localICECandidates: [],
-        socket: io(),
+        socket: io('ws://localhost:3001'),
         remoteVideo,
         recognition: undefined,
     }
