@@ -1,4 +1,9 @@
+import React, { useState } from 'react';
+
 export const EntireChat = ({ showChat }) => {
+
+    const messages = useState([]);
+
     if (!showChat) return null; // fade in and out
 
     const onKeyPress = (e) => {
@@ -24,7 +29,19 @@ export const EntireChat = ({ showChat }) => {
     return (
         <div id="entire-chat">
             <div id="chat-zone">
-                <div className="chat-messages"></div>
+                <div className="chat-messages">
+                    {messages.map(({ message, source }) => {
+                        return (
+                            <div className={`message-item ${source} cssanimation fadeInBottom`}>
+                                <div class="message-bloc">
+                                    <div class="message">
+                                        {message}
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
             </div>
             <form className="compose">
                 <input type="text" placeholder="Type a message" onKeyPress={onKeyPress} />
