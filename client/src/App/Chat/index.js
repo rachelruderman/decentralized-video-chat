@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import Snackbar from 'node-snackbar';
 import io from 'socket.io-client';
 import { Header } from './Header';
@@ -8,6 +8,7 @@ import { Header } from './Header';
 // import { LocalVideo } from './LocalVideo';
 import { setDocumentTitle } from './_util/setDocumentTitle';
 import { redirectUnsupportedBrowsers } from './_util/device/redirectUnsupportedBrowsers';
+import { useInitializeVideoChat } from './_hooks/useInitializeVideoChat';
 // import { EntireChat } from './EntireChat';
 // import { createBrowserHistory } from 'history';
 // const history = createBrowserHistory();
@@ -48,9 +49,7 @@ export const Chat = () => {
     const localVideo = localVideoRef.current;
     const moveable = moveableRef.current;
 
-    useEffect(() => {
-        startUp();
-    }, [remoteVideo, localVideo]);
+    useInitializeVideoChat({ localVideo, remoteVideo })
 
     const VideoChat = {
         connected: false,
@@ -87,8 +86,6 @@ export const Chat = () => {
 
     // // Element vars
     // const remoteVideoVanilla = document.getElementById("remote-video");
-
-    const url = window.location.href;
     // const roomHash = url.substring(url.lastIndexOf("/") + 1).toLowerCase();
 
     // // Called when window is resized
@@ -139,9 +136,7 @@ export const Chat = () => {
 
 
     const startUp = () => {
-        redirectUnsupportedBrowsers();
 
-        setDocumentTitle(url.substring(url.lastIndexOf('/')) + 1); // todo: what is this?
 
         // // get webcam on load
         // VideoChat.requestMediaStream();
