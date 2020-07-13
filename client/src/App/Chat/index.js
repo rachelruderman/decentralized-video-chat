@@ -4,12 +4,12 @@ import Snackbar from 'node-snackbar';
 import io from 'socket.io-client';
 import { Header } from './Header';
 import { isWebRtcSupported } from './_util/device/isWebRtcSupported';
-import { Buttons } from './Buttons';
+// import { Buttons } from './Buttons';
 import { isMobileOrTablet } from './_util/device/isMobileOrTablet';
-import { RemoteVideo } from './RemoteVideo';
-import { LocalVideo } from './LocalVideo';
+// import { RemoteVideo } from './RemoteVideo';
+// import { LocalVideo } from './LocalVideo';
 import { getBrowserName } from './_util/device/getBrowserName';
-import { EntireChat } from './EntireChat';
+// import { EntireChat } from './EntireChat';
 import history from './history';
 
 export const Chat = () => {
@@ -151,12 +151,12 @@ export const Chat = () => {
     }
 
     const renderHeader = () => <Header />;
-    const renderRemoteVideo = () => <RemoteVideo remoteVideoRef={remoteVideoRef} />
+    // const renderRemoteVideo = () => <RemoteVideo remoteVideoRef={remoteVideoRef} />
 
-    const renderLocalVideo = () => {
-        const childProps = { localVideoRef, isPaused, moveableRef };
-        return <LocalVideo {...childProps} />
-    }
+    // const renderLocalVideo = () => {
+    //     const childProps = { localVideoRef, isPaused, moveableRef };
+    //     return <LocalVideo {...childProps} />
+    // }
 
     const toggleSendCaptions = () => {
         (isSendingCaptions)
@@ -256,16 +256,16 @@ export const Chat = () => {
         _delay = setInterval(delayCheck, 500);
     }
 
-    const renderButtons = () => <Buttons />;
+    // const renderButtons = () => <Buttons />;
 
-    const renderEntireChat = () => <EntireChat />;
+    // const renderEntireChat = () => <EntireChat />;
     return (
         <div onMouseMove={onMouseMove}>
             {renderHeader()}
-            {renderRemoteVideo()}
+            {/* {renderRemoteVideo()}
             {renderLocalVideo()}
             {renderEntireChat()}
-            {renderButtons()}
+            {renderButtons()} */}
         </div>
     )
 }
