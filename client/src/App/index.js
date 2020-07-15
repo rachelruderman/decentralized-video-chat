@@ -8,7 +8,6 @@ import {
 } from "react-router-dom";
 
 export const App = () => {
-    // todo: add react router and other pages
 
     const renderHeader = () => (
         <div id="header">
