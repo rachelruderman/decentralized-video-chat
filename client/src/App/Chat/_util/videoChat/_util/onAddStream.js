@@ -1,5 +1,6 @@
 import { logIt } from "../../error/logIt";
-
+import { VideoChat } from "..";
+import Snackbar from 'node-snackbar';
 // Called when a stream is added to the peer connection
 export const onAddStream = (event) => {
     logIt("onAddStream <<< Received new stream from remote. Adding it...");
@@ -15,7 +16,7 @@ export const onAddStream = (event) => {
     captionText.fadeOut();
     // Reposition local video after a second, as there is often a delay
     // between adding a stream and the height of the video div changing
-    setTimeout(() => rePositionLocalVideo(), 500);
+    setTimeout(rePositionLocalVideo, 500);
     // var timesRun = 0;
     // var interval = setInterval(function () {
     //   timesRun += 1;

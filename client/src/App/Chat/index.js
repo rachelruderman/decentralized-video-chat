@@ -79,20 +79,6 @@ export const Chat = () => {
     //     rePositionCaptions();
     // }
 
-    // const receiveCaptions = (captions) => {
-    //     updateState({ captionText: '' });
-    //     // Other user is not using chrome
-    //     if (captions === "notusingchrome") {
-    //         alert(
-    //             "Other caller must be using chrome for this feature to work. Live Caption turned off."
-    //         );
-    //         updateState({ isReceivingCaptions: false });
-    //         return;
-    //     }
-    //     updateState({ captionText: captions });
-    //     rePositionCaptions();
-    // }
-
     const updateState = (data) => setState(prevState => ({ ...prevState, ...data }));
 
     // const findSenderByKind = (kind) => {

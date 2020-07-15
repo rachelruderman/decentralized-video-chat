@@ -16,7 +16,7 @@ export const onToken = (callback) => {
         });
         // Add general purpose data channel to peer connection,
         // used for text chats, captions, and toggling sending captions
-        dataChannel = VideoChat.peerConnection.createDataChannel("chat", {
+        const dataChannel = VideoChat.peerConnection.createDataChannel("chat", {
             negotiated: true,
             // both peers must have same id
             id: 0,
@@ -32,11 +32,11 @@ export const onToken = (callback) => {
             const dataType = receivedData.substring(0, 4);
             const cleanedMessage = receivedData.slice(4);
             if (dataType === "mes:") {
-                handleReceiveMessage(cleanedMessage);
+                VideoChat.handleReceiveMessage(cleanedMessage);
             } else if (dataType === "cap:") {
-                receiveCaptions(cleanedMessage);
+                VideoChat.receiveCaptions({ captions: cleanedMessage });
             } else if (dataType === "tog:") {
-                toggleSendCaptions();
+                VideoChat.toggleSendCaptions();
             }
         };
         // Set up callbacks for the connection generating iceCandidates or
@@ -46,12 +46,10 @@ export const onToken = (callback) => {
         // Set up listeners on the socket
         VideoChat.socket.on("candidate", VideoChat.onCandidate);
         VideoChat.socket.on("answer", VideoChat.onAnswer);
-        VideoChat.socket.on("requestToggleCaptions", () => toggleSendCaptions());
-        VideoChat.socket.on("receiveCaptions", (captions) =>
-            receiveCaptions(captions)
-        );
+        VideoChat.socket.on("requestToggleCaptions", VideoChat.toggleSendCaptions);
+        VideoChat.socket.on("receiveCaptions", VideoChat.receiveCaptions);
         // Called when there is a change in connection state
-        VideoChat.peerConnection.oniceconnectionstatechange = function (event) {
+        VideoChat.peerConnection.oniceconnectionstatechange = (event) => {
             switch (VideoChat.peerConnection.iceConnectionState) {
                 case "connected":
                     logIt("connected");
@@ -65,7 +63,7 @@ export const onToken = (callback) => {
                     // VideoChat.socket.connect
                     // VideoChat.createOffer();
                     // Refresh page if connection has failed
-                    location.reload();
+                    window.location.reload();
                     break;
                 case "closed":
                     logIt("closed");

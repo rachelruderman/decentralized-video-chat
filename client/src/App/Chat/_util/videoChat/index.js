@@ -10,6 +10,7 @@ import { onAddStream } from "./_util/onAddStream";
 import io from 'socket.io-client';
 import { onChatRoomFull } from "./_util/onChatRoomFull";
 import { redirectToNewCall } from "./_util/redirectToNewCall";
+import { receiveCaptions } from "./_util/receiveCaptions";
 
 export const VideoChat = {
     connected: false,
@@ -31,4 +32,5 @@ export const VideoChat = {
     onAddStream,
     onChatRoomFull,
     redirectToNewCall,
+    receiveCaptions,
 }
