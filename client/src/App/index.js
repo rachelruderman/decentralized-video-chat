@@ -11,7 +11,7 @@ export const App = () => {
     // todo: add react router and other pages
     return (
         <BrowserRouter>
-            <div className="App">
+            <>
                 <Switch>
                     <Route path="/chat">
                         <Chat />
@@ -24,7 +24,7 @@ export const App = () => {
                     </Route>
                     <Redirect to='/' />
                 </Switch>
-            </div>
+            </>
         </BrowserRouter>
     );
 }
