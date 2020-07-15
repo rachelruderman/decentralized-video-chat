@@ -26,7 +26,7 @@ export const Button = ({ button }) => {
     return (
         <div className="buttonContainer">
             <button className="hoverButton" onClick={onClick}>
-                <i id={`${baseId}-icon`} className={`$fas fa-${icon} fa-xs`}></i>
+                <i id={`${baseId}-icon`} className={`fas fa-${icon} fa-xs`}></i>
             </button>
             <div id={`${baseId}-text`} className="HoverState">{text}</div>
         </div>

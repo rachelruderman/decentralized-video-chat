@@ -12,12 +12,14 @@ export const Buttons = (props) => {
 
     const {
         VideoChat,
+        state,
         updateState,
+        findSenderByKind,
     } = props;
 
     const buttons = [
         {
-            onClick: muteMicrophone,
+            onClick: () => muteMicrophone(props),
             baseId: 'mic',
             enableText: 'Mute',
             enableIcon: 'microphone',

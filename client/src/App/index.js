@@ -2,9 +2,10 @@ import React from 'react';
 import { Chat } from './Chat';
 
 export const App = () => {
-  return (
-    <div className="App">
-      <Chat />
-    </div>
-  );
+    // todo: add react router and other pages
+    return (
+        <div className="App">
+            <Chat />
+        </div>
+    );
 }

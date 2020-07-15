@@ -18,20 +18,10 @@ export const Chat = () => {
         mode: 'camera',
         chatInput: '',
         captionText: '',
+        peerConnection: null,
     }
 
-    const [{
-        // isMuted,
-        // isPaused,
-        // isReceivingCaptions,
-        // isSendingCaptions,
-        // showChat,
-        // isFullscreen,
-        // dataChannel,
-        // mode,
-        // chatInput,
-        // captionText,
-    }, setState] = useState(initialState);
+    const [state, setState] = useState(initialState);
 
     // // Called when window is resized
     // const windowResized = () => {
@@ -41,10 +31,10 @@ export const Chat = () => {
 
     const updateState = (data) => setState(prevState => ({ ...prevState, ...data }));
 
-    // const findSenderByKind = (kind) => {
-    //     const senders = VideoChat.peerConnection.getSenders();
-    //     return senders.find(sender => (sender.track.kind === kind));
-    // }
+    const findSenderByKind = (kind) => {
+        const senders = state.peerConnection.getSenders();
+        return senders.find(sender => (sender.track.kind === kind));
+    }
 
     const renderHeader = () => <Header />;
 
@@ -66,16 +56,22 @@ export const Chat = () => {
         // _delay = setInterval(delayCheck, 500);
     }
 
-    const renderButtons = () => <Buttons />;
+    const childProps = {
+        state,
+        updateState,
+        findSenderByKind,
+    };
 
-    const renderEntireChat = () => <EntireChat />;
+    const renderButtons = () => <Buttons {...childProps} />;
 
-    const renderVideoChat = () => <VideoChat />;
+    const renderEntireChat = () => <EntireChat {...childProps} />;
+
+    const renderVideoChat = () => <VideoChat {...childProps} />;
 
     return (
         <div onMouseMove={onMouseMove}>
             {renderHeader()}
-            {renderVideoChat()}
+            {/* {renderVideoChat()} */}
             {/* {renderEntireChat()} */}
             {renderButtons()}
         </div>
