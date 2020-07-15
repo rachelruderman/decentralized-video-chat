@@ -1,7 +1,8 @@
 export const pauseVideo = (props) => {
     const {
         updateState,
-        state
+        state,
+        sender,
     } = props;
 
     const { isPaused } = state;
