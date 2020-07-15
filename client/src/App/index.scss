@@ -1,1 +1,26 @@
 @import './Chat/index.scss';
+
+#header {
+    $SPACING: 20px;
+
+    position: absolute;
+    color: white;
+    font-family: "Fira Sans", sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    white-space: nowrap;
+    top: $SPACING;
+    left: $SPACING;
+    float: left;
+  
+  p,
+  img {
+    float: left;
+    padding: 7px;
+  }
+  
+  a {
+    color: white;
+    text-decoration: none;
+  }
+}

@@ -36,8 +36,6 @@ export const Chat = () => {
         return senders.find(sender => (sender.track.kind === kind));
     }
 
-    const renderHeader = () => <Header />;
-
     // Reposition captions to bottom of video
     const rePositionCaptions = () => {
         // let bounds = remoteVideo.getBoundingClientRect();
@@ -70,7 +68,6 @@ export const Chat = () => {
 
     return (
         <div onMouseMove={onMouseMove}>
-            {renderHeader()}
             {/* {renderVideoChat()} */}
             {/* {renderEntireChat()} */}
             {renderButtons()}

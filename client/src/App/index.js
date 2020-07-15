@@ -9,8 +9,19 @@ import {
 
 export const App = () => {
     // todo: add react router and other pages
+
+    const renderHeader = () => (
+        <div id="header">
+            <a target="_blank" href="/">
+                <img src="/images/logo.svg" alt="Neon" width="48" height="48" />
+                <p>Zipcall</p>
+            </a>
+        </div>
+    )
+
     return (
         <BrowserRouter>
+            {renderHeader()}
             <Switch>
                 <Route path="/chat">
                     <Chat />
