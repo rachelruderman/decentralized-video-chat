@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useInitializeVideoChat } from './_hooks/useInitializeVideoChat';
+import { RemoteVideo } from './RemoteVideo';
+import { LocalVideo } from './LocalVideo';
 
 export const VideoChat = ({ isPaused }) => {
 
@@ -37,7 +39,7 @@ export const VideoChat = ({ isPaused }) => {
     return (
         <div>
             {renderRemoteVideo()}
-            {renerLocalVideo()}
+            {renderLocalVideo()}
         </div>
     )
 }

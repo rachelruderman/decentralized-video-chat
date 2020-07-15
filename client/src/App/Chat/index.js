@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Header } from './Header';
 import { Buttons } from './Buttons';
-import { VideoChat } from './_util/videoChat';
+import { VideoChat } from './VideoChat';
 import { EntireChat } from './EntireChat';
 
 export const Chat = () => {
@@ -76,7 +76,7 @@ export const Chat = () => {
         <div onMouseMove={onMouseMove}>
             {renderHeader()}
             {renderVideoChat()}
-            {renderEntireChat()}
+            {/* {renderEntireChat()} */}
             {renderButtons()}
         </div>
     )
