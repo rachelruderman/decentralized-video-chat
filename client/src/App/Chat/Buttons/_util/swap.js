@@ -44,14 +44,10 @@ export const swap = (props) => {
                 Snackbar.close();
                 // Change display mode
                 updateState({ mode: 'screen' });
-                // Update swap button icon and text
-                swapIcon.classList.remove("fa-desktop");
-                swapIcon.classList.add("fa-camera");
-                swapText.innerText = "Share Webcam";
                 switchStreamHelper(stream);
             })
-            .catch(function (err) {
-                logIt(err);
+            .catch((error) => {
+                logIt(error);
                 logIt("Error sharing screen");
                 Snackbar.close();
             });
@@ -68,10 +64,6 @@ export const swap = (props) => {
             .then(function (stream) {
                 // Change display mode
                 updateState({ mode: 'camera' });
-                // Update swap button icon and text
-                swapIcon.classList.remove("fa-camera");
-                swapIcon.classList.add("fa-desktop");
-                swapText.innerText = "Share Screen";
                 switchStreamHelper(stream);
             });
     }

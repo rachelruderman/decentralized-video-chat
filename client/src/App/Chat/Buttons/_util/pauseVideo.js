@@ -1,13 +1,11 @@
 export const pauseVideo = (props) => {
     const {
-        findSenderByKind,
         updateState,
         state
     } = props;
 
     const { isPaused } = state;
 
-    const sender = findSenderByKind(props.video);
     if (sender) {
         updateState({ isPaused: !sender.track.enabled })
         sender.track.enabled = isPaused;

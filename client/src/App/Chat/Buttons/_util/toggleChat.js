@@ -1,1 +1,3 @@
-export const toggleChat = ({ updateState, state }) => updateState({ showChat: !state.showChat });
+export const toggleChat = ({ updateState, state }) => {
+    updateState({ showChat: !state.showChat })
+}

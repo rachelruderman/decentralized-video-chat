@@ -5,7 +5,6 @@ export const requestToggleCaptions = (props) => {
     const {
         VideoChat,
         state,
-        dataChannel,
         updateState,
     } = props;
 
@@ -26,6 +25,6 @@ export const requestToggleCaptions = (props) => {
     }
 
     // Send request to get captions over data channel
-    dataChannel.send("tog:");
+    state.dataChannel.send("tog:");
     updateState({ isReceivingCaptions: !state.isReceivingCaptions });
 }

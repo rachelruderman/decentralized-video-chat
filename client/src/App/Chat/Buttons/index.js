@@ -10,12 +10,7 @@ import { redirectToNewCall } from '../_util/videoChat/_util/redirectToNewCall';
 
 export const Buttons = (props) => {
 
-    const {
-        VideoChat,
-        state,
-        updateState,
-        findSenderByKind,
-    } = props;
+    const { mode, } = props.state;
 
     const buttons = [
         {
@@ -33,7 +28,7 @@ export const Buttons = (props) => {
         //     enableText: 'Fullscreen'
         // },
         {
-            onClick: pauseVideo,
+            onClick: () => pauseVideo(props),
             baseId: 'video',
             enableText: 'Pause Video',
             enableIcon: 'video',
@@ -41,13 +36,13 @@ export const Buttons = (props) => {
             disableIcon: 'video-slash',
         },
         {
-            onClick: swap,
+            onClick: () => swap(props),
             baseId: 'swap',
-            enableText: 'Share Screen',
-            enableIcon: 'desktop',
+            enableText: (mode === 'camera') ? 'Share Webcam' : 'Share Screen',
+            enableIcon: (mode === 'camera') ? 'desktop' : 'camera',
         },
         {
-            onClick: toggleChat,
+            onClick: () => toggleChat(props),
             baseId: 'chat',
             enableText: 'Show Chat',
             enableIcon: 'comment',
@@ -61,7 +56,7 @@ export const Buttons = (props) => {
             enableIcon: 'external-link-alt',
         },
         {
-            onClick: requestToggleCaptions,
+            onClick: () => requestToggleCaptions(props),
             baseId: 'caption',
             enableText: 'Start Live Caption',
             enableIcon: 'closed-captioning',
