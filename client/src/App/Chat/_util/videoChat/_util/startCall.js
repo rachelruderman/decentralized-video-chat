@@ -5,5 +5,5 @@ import { VideoChat } from "..";
 export const startCall = () => {
     logIt("startCall >>> Sending token request...");
     VideoChat.socket.on("token", VideoChat.onToken(VideoChat.createOffer));
-    VideoChat.socket.emit("token", roomHash);
+    VideoChat.socket.emit("token", VideoChat.roomHash);
 };

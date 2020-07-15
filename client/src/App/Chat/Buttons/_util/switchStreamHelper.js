@@ -1,11 +1,12 @@
+import { VideoChat } from "../../_util/videoChat";
 
 // Swap current video track with passed in stream
-export const switchStreamHelper = (stream) => {
+export const switchStreamHelper = ({ stream, findSenderByKind, localVideo, isPaused, pauseVideo }) => {
     // Get current video track
     const [videoTrack] = stream.getVideoTracks();
     // Add listen for if the current track swaps, swap back
     videoTrack.onended = function () {
-        swap();
+        VideoChat.swap();
     };
     if (VideoChat.connected) {
         // Find sender

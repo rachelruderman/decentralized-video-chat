@@ -13,10 +13,10 @@ export const onAddStream = (event) => {
     // Update connection status
     VideoChat.connected = true;
     // Hide caption status text
-    captionText.fadeOut();
+    // captionText.fadeOut();
     // Reposition local video after a second, as there is often a delay
     // between adding a stream and the height of the video div changing
-    setTimeout(rePositionLocalVideo, 500);
+    // setTimeout(rePositionLocalVideo, 500);
     // var timesRun = 0;
     // var interval = setInterval(function () {
     //   timesRun += 1;

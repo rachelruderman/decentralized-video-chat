@@ -17,7 +17,7 @@ export const VideoChat = {
     willInitiateCall: false,
     localICECandidates: [],
     socket: io('ws://localhost:3001'),
-    remoteVideo: null,
+    remoteVideo: {},
     recognition: undefined,
     roomHash: window.location.href.substring(window.location.href.lastIndexOf("/") + 1).toLowerCase(),
 

@@ -58,6 +58,7 @@ export const onToken = (callback) => {
                     break;
                 case "disconnected":
                     logIt("disconnected");
+                    break;
                 case "failed":
                     logIt("failed");
                     // VideoChat.socket.connect
@@ -67,6 +68,8 @@ export const onToken = (callback) => {
                     break;
                 case "closed":
                     logIt("closed");
+                    break;
+                default:
                     break;
             }
         };

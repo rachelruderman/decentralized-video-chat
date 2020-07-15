@@ -1,5 +1,6 @@
 import Snackbar from 'node-snackbar'
 import { switchStreamHelper } from './switchStreamHelper';
+import { logIt } from '../../_util/error/logIt';
 
 // Swap camera / screen share
 export const swap = (props) => {
@@ -7,6 +8,9 @@ export const swap = (props) => {
     const {
         VideoChat,
         localVideo,
+        updateState,
+        chatZone,
+        state,
     } = props;
 
     // Handle swap video before video call is connected
@@ -18,7 +22,7 @@ export const swap = (props) => {
     const swapIcon = document.getElementById("swap-icon");
     const swapText = document.getElementById("swap-text");
     // If mode is camera then switch to screen share
-    if (mode === "camera") {
+    if (state.mode === "camera") {
         // Show accept screenshare snackbar
         Snackbar.show({
             text:

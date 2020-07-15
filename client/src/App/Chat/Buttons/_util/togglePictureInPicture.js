@@ -1,5 +1,8 @@
+import { logIt } from "../../_util/error/logIt";
+
 //Picture in picture
-export const togglePictureInPicture = () => {
+export const togglePictureInPicture = (remoteVideoVanilla) => {
+
     const isPipSupported = (
         "pictureInPictureEnabled" in document ||
         remoteVideoVanilla.webkitSetPresentationMode

@@ -5,6 +5,8 @@ import { pauseVideo, } from './_util/pauseVideo';
 import { swap } from './_util/swap';
 import { togglePictureInPicture } from './_util/togglePictureInPicture';
 import { toggleChat } from './_util/toggleChat';
+import { muteMicrophone, } from './_util/muteMicrophone';
+import { redirectToNewCall } from '../_util/videoChat/_util/redirectToNewCall';
 
 export const Buttons = (props) => {
 
@@ -65,7 +67,7 @@ export const Buttons = (props) => {
             disableIcon: 'closed-captioning-slash',
         },
         {
-            onClick: startNewCall,
+            onClick: redirectToNewCall,
             baseId: 'end-call',
             enableText: 'End Call',
             enableIcon: 'phone-slash',

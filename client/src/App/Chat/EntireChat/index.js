@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
+import { VideoChat } from '../_util/videoChat';
 
-export const EntireChat = ({ showChat }) => {
+export const EntireChat = ({ showChat, chatZone }) => {
+
+    // // Text Chat
+    // // Add text message to chat screen on page
+    const addMessageToScreen = ({ message, isOwnMessage }) => {
+        const source = (isOwnMessage) ? 'customer' : 'moderator';
+        // messages.push({source, message});
+    }
 
     const messages = useState([]);
 
@@ -16,7 +24,7 @@ export const EntireChat = ({ showChat }) => {
             // Make links clickable
             message = message.autoLink();
             // Send message over data channel
-            dataChannel.send(`mes:${message}`);
+            VideoChat.dataChannel.send(`mes:${message}`);
             // Add message to screen
             addMessageToScreen({ message, isOwnMessage: true });
             // Auto scroll chat down
