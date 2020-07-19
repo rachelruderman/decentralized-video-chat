@@ -1,19 +1,19 @@
-import { logIt } from "../../_util/error/logIt";
+import { logIt } from "../../../_util/error/logIt";
 
 let roomHash;
 
 // When the peerConnection generates an ice candidate, send it over the socket to the peer.
-export function onIceCandidate(event) {
+export function onIceCandidate({ candidate }) {
     logIt("onIceCandidate");
-    if (event.candidate) {
+    if (candidate) {
         logIt(
-            `<<< Received local ICE candidate from STUN/TURN server (${event.candidate.address})`
+            `<<< Received local ICE candidate from STUN/TURN server (${candidate.address})`
         );
-        if (this.connected) {
-            logIt(`>>> Sending local ICE candidate (${event.candidate.address})`);
+        if (this.isConnected) {
+            logIt(`>>> Sending local ICE candidate (${candidate.address})`);
             this.socket.emit(
                 "candidate",
-                JSON.stringify(event.candidate),
+                JSON.stringify(candidate),
                 roomHash
             );
         } else {
@@ -21,7 +21,7 @@ export function onIceCandidate(event) {
             // This most likely is happening on the "caller" side.
             // The peer may not have created the RTCPeerConnection yet, so we are waiting for the 'answer'
             // to arrive. This will signal that the peer is ready to receive signaling.
-            this.localICECandidates.push(event.candidate);
+            this.localICECandidates.push(candidate);
         }
     }
 };

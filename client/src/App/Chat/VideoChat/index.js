@@ -3,20 +3,19 @@ import { RemoteVideo } from './RemoteVideo';
 import { LocalVideo } from './LocalVideo';
 import { createAnswer } from './_util/createAnswer';
 import { createOffer } from './_util/createOffer';
-import { onMediaStream } from './_util/onMediaStream';
 import { setDocumentTitle } from '../_util/setDocumentTitle';
 import { redirectUnsupportedBrowsers } from '../_util/device/redirectUnsupportedBrowsers';
 import io from 'socket.io-client';
 import { logIt } from '../_util/error/logIt';
 import { showJoinLink } from './_util/showJoinLink';
-import { onChatRoomFull } from './_util/socketListeners/onChatRoomFull';
-import { onOffer } from './_util/socketListeners/onOffer';
-import { onReadyToCall } from './_util/socketListeners/onReadyToCall';
-import { onAddStream } from './_util/peerConnectionListeners/onAddStream';
-import { receiveCaptions } from './_util/socketListeners/receiveCaptions';
-import { onCandidate } from './_util/socketListeners/onCandidate';
-import { onIceCandidate } from './_util/onIceCandidate';
-import { onToken } from './_util/socketListeners/onToken';
+import { onFull } from './eventListeners/socket/onFull';
+import { onOffer } from './eventListeners/socket/onOffer';
+import { onReadyToCall } from './eventListeners/socket/onReadyToCall';
+import { onAddStream } from './eventListeners/peerConnection/onAddStream';
+import { receiveCaptions } from './eventListeners/socket/receiveCaptions';
+import { onCandidate } from './eventListeners/socket/onCandidate';
+import { onIceCandidate } from './eventListeners/peerConnection/onIceCandidate';
+import { onToken } from './eventListeners/socket/onToken';
 import { startCall } from './_util/startCall';
 
 // video chat is a use case for a class component
@@ -34,13 +33,11 @@ export class VideoChat extends Component {
 
         // websocket
         this.socket = io('ws://localhost:3001');
-        this.onChatRoomFull = onChatRoomFull;
+        this.onFull = onFull;
         this.onOffer = onOffer;
         this.onReadyToCall = onReadyToCall;
 
         // this.handleReceiveMessage = handleReceiveMessage;
-        this.onMediaStream = onMediaStream;
-
         this.startCall = startCall;
         this.onToken = onToken;
         this.onIceCandidate = onIceCandidate
@@ -49,11 +46,10 @@ export class VideoChat extends Component {
         this.createAnswer = createAnswer;
         this.onAddStream = onAddStream;
         this.receiveCaptions = receiveCaptions;
-
     }
 
     addSocketListeners = () => {
-        this.socket.on("full", this.onChatRoomFull);
+        this.socket.on("full", this.onFull);
         this.socket.on("offer", this.onOffer);
         this.socket.on("ready", this.readyToCall);
         this.socket.on("willInitiateCall", () => {

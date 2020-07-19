@@ -1,4 +1,4 @@
-import { VideoChat } from "../../VideoChat/videoChat";
+import { VideoChat } from "../../VideoChat";
 
 // Swap current video track with passed in stream
 export const switchStreamHelper = ({ stream, findSenderByKind, localVideo, isPaused, pauseVideo }) => {
