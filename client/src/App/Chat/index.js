@@ -36,11 +36,6 @@ export const Chat = () => {
 
     const updateState = (data) => setState(prevState => ({ ...prevState, ...data }));
 
-    const findSenderByKind = (kind) => {
-        const senders = state.peerConnection.getSenders();
-        return senders.find(sender => (sender.track.kind === kind));
-    }
-
     // Reposition captions to bottom of video
     const rePositionCaptions = () => {
         // let bounds = remoteVideo.getBoundingClientRect();
@@ -62,7 +57,6 @@ export const Chat = () => {
     const childProps = {
         state,
         updateState,
-        findSenderByKind,
         remoteVideoRef,
         localVideoRef,
         remoteVideo,

@@ -1,7 +1,8 @@
 import { VideoChat } from "../../VideoChat";
+import { findSenderByKind } from "../../VideoChat/eventListeners/peerConnection/findSenderByKind";
 
 // Swap current video track with passed in stream
-export const switchStreamHelper = ({ stream, findSenderByKind, localVideo, isPaused, pauseVideo }) => {
+export const switchStreamHelper = ({ stream, localVideo, isPaused, pauseVideo }) => {
     // Get current video track
     const [videoTrack] = stream.getVideoTracks();
     // Add listen for if the current track swaps, swap back
@@ -15,7 +16,7 @@ export const switchStreamHelper = ({ stream, findSenderByKind, localVideo, isPau
         sender.replaceTrack(videoTrack);
     }
     // Update local video stream
-    this.localStream = videoTrack;
+    VideoChat.localStream = videoTrack;
     // Update local video object
     localVideo.srcObject = stream;
     // Unpause video on swap

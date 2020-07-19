@@ -1,6 +1,7 @@
+import { findSenderByKind } from "../../VideoChat/eventListeners/peerConnection/findSenderByKind";
+
 export const muteMicrophone = (props) => {
     const {
-        findSenderByKind,
         updateState,
         state,
     } = props;

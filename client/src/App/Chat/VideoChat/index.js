@@ -10,13 +10,15 @@ import { logIt } from '../_util/error/logIt';
 import { showJoinLink } from './_util/showJoinLink';
 import { onFull } from './eventListeners/socket/onFull';
 import { onOffer } from './eventListeners/socket/onOffer';
-import { onReadyToCall } from './eventListeners/socket/onReadyToCall';
+import { onReady } from './eventListeners/socket/onReady';
 import { onAddStream } from './eventListeners/peerConnection/onAddStream';
 import { receiveCaptions } from './eventListeners/socket/receiveCaptions';
 import { onCandidate } from './eventListeners/socket/onCandidate';
 import { onIceCandidate } from './eventListeners/peerConnection/onIceCandidate';
 import { onToken } from './eventListeners/socket/onToken';
 import { startCall } from './_util/startCall';
+import { findSenderByKind } from './eventListeners/peerConnection/findSenderByKind';
+import { onWillInitiateCall } from './eventListeners/socket/onWillInitiateCall';
 
 // video chat is a use case for a class component
 export class VideoChat extends Component {
@@ -35,7 +37,7 @@ export class VideoChat extends Component {
         this.socket = io('ws://localhost:3001');
         this.onFull = onFull;
         this.onOffer = onOffer;
-        this.onReadyToCall = onReadyToCall;
+        this.onReady = onReady;
 
         // this.handleReceiveMessage = handleReceiveMessage;
         this.startCall = startCall;
@@ -46,16 +48,15 @@ export class VideoChat extends Component {
         this.createAnswer = createAnswer;
         this.onAddStream = onAddStream;
         this.receiveCaptions = receiveCaptions;
+        this.findSenderByKind = findSenderByKind;
+        this.onWillInitiateCall = onWillInitiateCall;
     }
 
     addSocketListeners = () => {
         this.socket.on("full", this.onFull);
         this.socket.on("offer", this.onOffer);
-        this.socket.on("ready", this.readyToCall);
-        this.socket.on("willInitiateCall", () => {
-            this.willInitiateCall = true;
-            console.log('will iniitate!')
-        });
+        this.socket.on("ready", this.onReady);
+        this.socket.on("willInitiateCall", this.onWillInitiateCall);
     }
 
     componentDidMount = async () => {
