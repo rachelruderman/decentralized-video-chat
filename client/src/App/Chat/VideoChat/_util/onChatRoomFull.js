@@ -1,4 +1,4 @@
-import { VideoChat } from "..";
+import { VideoChat } from "../videoChat";
 
 export const onChatRoomFull = () => {
     alert(

@@ -1,5 +1,5 @@
 import { logIt } from "../../_util/error/logIt";
-import { VideoChat } from "..";
+import { onMediaStream } from "./onMediaStream";
 
 export const requestMediaStream = async () => {
     logIt("requestMediaStream");
@@ -11,7 +11,7 @@ export const requestMediaStream = async () => {
             audio: true,
         })
 
-        VideoChat.onMediaStream(stream);
+        onMediaStream(stream);
     }
     catch (error) {
         logIt(error);

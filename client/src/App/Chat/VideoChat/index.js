@@ -1,19 +1,42 @@
-import React, { useRef, Fragment } from 'react';
-import { useInitializeVideoChat } from './_hooks/useInitializeVideoChat';
+import React, { Component, Fragment } from 'react';
 import { RemoteVideo } from './RemoteVideo';
 import { LocalVideo } from './LocalVideo';
+import { createAnswer } from './_util/videoChat/_util/createAnswer';
+import { createOffer } from './_util/videoChat/_util/createOffer';
+import { requestMediaStream } from './_util/videoChat/_util/requestMediaStream';
+import { onMediaStream } from './_util/onMediaStream';
+import { redirectUnsupportedBrowsers } from '../../_util/device/redirectUnsupportedBrowsers';
+import { setDocumentTitle } from '../../_util/setDocumentTitle';
+
 // video chat is a use case for a class component
-export const VideoChat = (props) => {
+export class VideoChat extends Component {
+    constructor(props) {
+        super(props);
 
+        this.state = {
 
+        };
 
-    const { remoteVideoRef, localVideoRef, remoteVideo, localVideo } = props;
+        this.createAnswer = createAnswer;
+        this.createOffer = createOffer;
+        // this.handleReceiveMessage = handleReceiveMessage;
+        this.requestMediaStream = requestMediaStream;
+        this.onMediaStream = onMediaStream;
+    }
 
-    useInitializeVideoChat({ remoteVideoRef, localVideoRef });
+    componentDidMount = () => {
+        console.log(this.props)
+        redirectUnsupportedBrowsers();
+        setDocumentTitle(`${window.location.pathname}1`); // todo: what is this?
+        // VideoChat.remoteVideo = remoteVideoRef.current;
+        // await VideoChat.requestMediaStream();
+    }
 
-    const renderRemoteVideo = () => <RemoteVideo {...props} />
+    // useInitializeVideoChat = ({ remoteVideoRef, localVideoRef });
 
-    const renderLocalVideo = () => <LocalVideo {...props} />
+    renderRemoteVideo = () => <RemoteVideo {...this.props} />
+
+    renderLocalVideo = () => <LocalVideo {...this.props} />
 
     // const rePositionLocalVideo = () => {
     //     // Get position of remote video
@@ -32,10 +55,12 @@ export const VideoChat = (props) => {
     //     moveable.style = { ...moveable.style, ...bounds };
     // }
 
-    return (
-        <Fragment>
-            {renderRemoteVideo()}
-            {renderLocalVideo()}
-        </Fragment>
-    )
+    render() {
+        return (
+            <Fragment>
+                {this.renderRemoteVideo()}
+                {this.renderLocalVideo()}
+            </Fragment>
+        )
+    }
 }
