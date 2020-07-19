@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Header } from './Header';
+import React, { useState, useRef } from 'react';
 import { Buttons } from './Buttons';
 import { VideoChat } from './VideoChat';
 import { EntireChat } from './EntireChat';
@@ -28,6 +27,12 @@ export const Chat = () => {
     //     rePositionLocalVideo();
     //     rePositionCaptions();
     // }
+
+    const remoteVideoRef = useRef();
+    const localVideoRef = useRef();
+
+    const remoteVideo = remoteVideoRef.current;
+    const localVideo = localVideoRef.current;
 
     const updateState = (data) => setState(prevState => ({ ...prevState, ...data }));
 
@@ -58,6 +63,10 @@ export const Chat = () => {
         state,
         updateState,
         findSenderByKind,
+        remoteVideoRef,
+        localVideoRef,
+        remoteVideo,
+        localVideo
     };
 
     const renderButtons = () => <Buttons {...childProps} />;
@@ -68,8 +77,8 @@ export const Chat = () => {
 
     return (
         <div onMouseMove={onMouseMove}>
-            {/* {renderVideoChat()} */}
-            {/* {renderEntireChat()} */}
+            {renderVideoChat()}
+            {renderEntireChat()}
             {renderButtons()}
         </div>
     )

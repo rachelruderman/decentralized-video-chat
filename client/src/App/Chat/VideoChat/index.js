@@ -1,23 +1,19 @@
-import React, { useRef } from 'react';
+import React, { useRef, Fragment } from 'react';
 import { useInitializeVideoChat } from './_hooks/useInitializeVideoChat';
 import { RemoteVideo } from './RemoteVideo';
 import { LocalVideo } from './LocalVideo';
 
-export const VideoChat = ({ isPaused }) => {
+export const VideoChat = (props) => {
 
-    const remoteVideoRef = useRef();
-    const localVideoRef = useRef();
 
-    const remoteVideo = remoteVideoRef.current;
-    const localVideo = localVideoRef.current;
 
-    useInitializeVideoChat({ remoteVideo, localVideo });
-    const renderRemoteVideo = () => <RemoteVideo remoteVideoRef={remoteVideoRef} />
+    const { remoteVideoRef, localVideoRef, remoteVideo, localVideo } = props;
 
-    const renderLocalVideo = () => {
-        const childProps = { localVideoRef, isPaused };
-        return <LocalVideo {...childProps} />
-    }
+    useInitializeVideoChat({ remoteVideoRef, localVideoRef });
+
+    const renderRemoteVideo = () => <RemoteVideo {...props} />
+
+    const renderLocalVideo = () => <LocalVideo {...props} />
 
     // const rePositionLocalVideo = () => {
     //     // Get position of remote video
@@ -37,9 +33,9 @@ export const VideoChat = ({ isPaused }) => {
     // }
 
     return (
-        <div>
+        <Fragment>
             {renderRemoteVideo()}
             {renderLocalVideo()}
-        </div>
+        </Fragment>
     )
 }

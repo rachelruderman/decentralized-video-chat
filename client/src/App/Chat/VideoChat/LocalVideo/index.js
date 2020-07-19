@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 
-export const LocalVideo = ({ moveableRef, localVideoRef, isPaused, isInitialized }) => {
+export const LocalVideo = ({ localVideoRef, isPaused, isInitialized }) => {
 
     const [text, setText] = useState('No webcam input');
 
@@ -29,8 +29,8 @@ export const LocalVideo = ({ moveableRef, localVideoRef, isPaused, isInitialized
     )
 
     return (
-        <Draggable
-            ref={moveableRef}
+        // <Draggable
+        <div
             axis="x"
             defaultPosition={{ x: 0, y: 0 }}
             position={null}
@@ -39,6 +39,7 @@ export const LocalVideo = ({ moveableRef, localVideoRef, isPaused, isInitialized
         >
             {renderText()}
             {renderVideo()}
-        </Draggable>
+        </div>
+        // </Draggable>
     )
 }

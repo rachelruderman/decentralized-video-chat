@@ -2,6 +2,7 @@
 import React from 'react';
 
 export const RemoteVideo = ({ remoteVideoRef }) => {
+    console.log('rendering remote vid')
     return (
         <>
             <p id="remote-video-text" />
