@@ -83,8 +83,8 @@ const Chat = () => {
         // Set up a callback to run when we have the ephemeral token to use Twilio's TURN server.
         startCall: function (event) {
             logIt("startCall >>> Sending token request...");
-            VideoChat.socket.on("token", VideoChat.onToken(VideoChat.createOffer));
-            VideoChat.socket.emit("token", roomHash);
+            this.socket.on("token", this.onToken(this.createOffer));
+            this.socket.emit("token", roomHash);
         },
 
         // When the peerConnection generates an ice candidate, send it over the socket to the peer.
@@ -94,9 +94,9 @@ const Chat = () => {
                 logIt(
                     `<<< Received local ICE candidate from STUN/TURN server (${event.candidate.address})`
                 );
-                if (VideoChat.connected) {
+                if (this.connected) {
                     logIt(`>>> Sending local ICE candidate (${event.candidate.address})`);
-                    VideoChat.socket.emit(
+                    this.socket.emit(
                         "candidate",
                         JSON.stringify(event.candidate),
                         roomHash
@@ -106,7 +106,7 @@ const Chat = () => {
                     // This most likely is happening on the "caller" side.
                     // The peer may not have created the RTCPeerConnection yet, so we are waiting for the 'answer'
                     // to arrive. This will signal that the peer is ready to receive signaling.
-                    VideoChat.localICECandidates.push(event.candidate);
+                    this.localICECandidates.push(event.candidate);
                 }
             }
         },
@@ -120,19 +120,19 @@ const Chat = () => {
             logIt(
                 `onCandidate <<< Received remote ICE candidate (${rtcCandidate.address} - ${rtcCandidate.relatedAddress})`
             );
-            VideoChat.peerConnection.addIceCandidate(rtcCandidate);
+            this.peerConnection.addIceCandidate(rtcCandidate);
         },
 
         // Create an offer that contains the media capabilities of the browser.
         createOffer: function () {
             logIt("createOffer >>> Creating offer...");
-            VideoChat.peerConnection.createOffer(
+            this.peerConnection.createOffer(
                 function (offer) {
                     // If the offer is created successfully, set it as the local description
                     // and send it over the socket connection to initiate the peerConnection
                     // on the other side.
-                    VideoChat.peerConnection.setLocalDescription(offer);
-                    VideoChat.socket.emit("offer", JSON.stringify(offer), roomHash);
+                    this.peerConnection.setLocalDescription(offer);
+                    this.socket.emit("offer", JSON.stringify(offer), roomHash);
                 },
                 function (err) {
                     logIt("failed offer creation");
@@ -151,11 +151,11 @@ const Chat = () => {
             return function () {
                 logIt(">>> Creating answer...");
                 rtcOffer = new RTCSessionDescription(JSON.parse(offer));
-                VideoChat.peerConnection.setRemoteDescription(rtcOffer);
-                VideoChat.peerConnection.createAnswer(
+                this.peerConnection.setRemoteDescription(rtcOffer);
+                this.peerConnection.createAnswer(
                     function (answer) {
-                        VideoChat.peerConnection.setLocalDescription(answer);
-                        VideoChat.socket.emit("answer", JSON.stringify(answer), roomHash);
+                        this.peerConnection.setLocalDescription(answer);
+                        this.socket.emit("answer", JSON.stringify(answer), roomHash);
                     },
                     function (err) {
                         logIt("Failed answer creation.");
@@ -170,13 +170,13 @@ const Chat = () => {
         onAddStream: function (event) {
             logIt("onAddStream <<< Received new stream from remote. Adding it...");
             // Update remote video source
-            VideoChat.remoteVideo.srcObject = event.stream;
+            this.remoteVideo.srcObject = event.stream;
             // Close the initial share url snackbar
             Snackbar.close();
             // Remove the loading gif from video
-            VideoChat.remoteVideo.style.background = "none";
+            this.remoteVideo.style.background = "none";
             // Update connection status
-            VideoChat.connected = true;
+            this.connected = true;
             // Hide caption status text
             captionText.fadeOut();
             // Reposition local video after a second, as there is often a delay
@@ -196,7 +196,7 @@ const Chat = () => {
     // Swap camera / screen share
     const swap = () => {
         // Handle swap video before video call is connected
-        if (!VideoChat.connected) {
+        if (!this.connected) {
             alert("You must join a call before you can share your screen.");
             return;
         }
@@ -267,14 +267,14 @@ const Chat = () => {
         videoTrack.onended = function () {
             swap();
         };
-        if (VideoChat.connected) {
+        if (this.connected) {
             // Find sender
             const sender = findSenderByKind(videoTrack.kind);
             // Replace sender track
             sender.replaceTrack(videoTrack);
         }
         // Update local video stream
-        VideoChat.localStream = videoTrack;
+        this.localStream = videoTrack;
         // Update local video object
         localVideo.srcObject = stream;
         // Unpause video on swap
@@ -364,8 +364,8 @@ const Chat = () => {
         try {
             var SpeechRecognition =
                 window.SpeechRecognition || window.webkitSpeechRecognition;
-            VideoChat.recognition = new SpeechRecognition();
-            // VideoChat.recognition.lang = "en";
+            this.recognition = new SpeechRecognition();
+            // this.recognition.lang = "en";
         } catch (e) {
             sendingCaptions = false;
             logIt(e);
@@ -375,11 +375,11 @@ const Chat = () => {
             return;
         }
         // recognition.maxAlternatives = 3;
-        VideoChat.recognition.continuous = true;
+        this.recognition.continuous = true;
         // Show results that aren't final
-        VideoChat.recognition.interimResults = true;
+        this.recognition.interimResults = true;
         var finalTranscript;
-        VideoChat.recognition.onresult = (event) => {
+        this.recognition.onresult = (event) => {
             let interimTranscript = "";
             for (let i = event.resultIndex, len = event.results.length; i < len; i++) {
                 var transcript = event.results[i][0].transcript;
@@ -397,16 +397,16 @@ const Chat = () => {
                 }
             }
         };
-        VideoChat.recognition.onend = function () {
+        this.recognition.onend = function () {
             logIt("on speech recording end");
             // Restart speech recognition if user has not stopped it
             if (sendingCaptions) {
                 startSpeech();
             } else {
-                VideoChat.recognition.stop();
+                this.recognition.stop();
             }
         };
-        VideoChat.recognition.start();
+        this.recognition.start();
     }
     // Get name of browser session using user agent
     const getBrowserName = () => {
@@ -483,7 +483,7 @@ const Chat = () => {
     const updateState = (data) => setState(prevState => ({ ...prevState, ...data }));
 
     const findSenderByKind = (kind) => {
-        const senders = VideoChat.peerConnection.getSenders();
+        const senders = this.peerConnection.getSenders();
         return senders.find(sender => (sender.track.kind === kind));
     }
 
@@ -661,11 +661,11 @@ const Chat = () => {
     // ephemeral token is returned from Twilio.
     const onOffer = (offer) => {
         logIt("onOffer <<< Received offer");
-        VideoChat.socket.on(
+        this.socket.on(
             "token",
-            VideoChat.onToken(VideoChat.createAnswer(offer))
+            this.onToken(this.createAnswer(offer))
         );
-        VideoChat.socket.emit("token", roomHash);
+        this.socket.emit("token", roomHash);
     }
 
     // When an answer is received, add it to the peerConnection as the remote description.
@@ -673,30 +673,30 @@ const Chat = () => {
         logIt("onAnswer <<< Received answer");
         const rtcAnswer = new RTCSessionDescription(JSON.parse(answer));
         // Set remote description of RTCSession
-        VideoChat.peerConnection.setRemoteDescription(rtcAnswer);
+        this.peerConnection.setRemoteDescription(rtcAnswer);
         // The caller now knows that the callee is ready to accept new ICE candidates, so sending the buffer over
-        VideoChat.localICECandidates.forEach((candidate) => {
+        this.localICECandidates.forEach((candidate) => {
             logIt(`>>> Sending local ICE candidate (${candidate.address})`);
             // Send ice candidate over websocket
-            VideoChat.socket.emit("candidate", JSON.stringify(candidate), roomHash);
+            this.socket.emit("candidate", JSON.stringify(candidate), roomHash);
         });
         // Reset the buffer of local ICE candidates. This is not really needed, but it's good practice
-        VideoChat.localICECandidates = [];
+        this.localICECandidates = [];
     }
 
     // When we are ready to call, enable the Call button.
     const readyToCall = () => {
         logIt("readyToCall");
         // First to join call will most likely initiate call
-        if (VideoChat.willInitiateCall) {
+        if (this.willInitiateCall) {
             logIt("Initiating call");
-            VideoChat.startCall();
+            this.startCall();
         }
     }
 
     const requestToggleCaptions = () => {
         // Handle requesting captions before connected
-        if (!VideoChat.connected) {
+        if (!this.connected) {
             alert("You must be connected to a peer to use Live Caption");
             return;
         }
@@ -718,7 +718,7 @@ const Chat = () => {
 
     const toggleSendCaptions = () => {
         (isSendingCaptions)
-            ? VideoChat.recognition.stop()
+            ? this.recognition.stop()
             : startSpeech();
 
         updateState({ isSendingCaptions: !isSendingCaptions });
@@ -749,7 +749,7 @@ const Chat = () => {
         document.title = "Zipcall - " + url.substring(url.lastIndexOf("/") + 1);
 
         // get webcam on load
-        VideoChat.requestMediaStream();
+        this.requestMediaStream();
 
         // Make local video draggable
         if (moveable && moveable.draggable) {

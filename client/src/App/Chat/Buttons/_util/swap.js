@@ -14,7 +14,7 @@ export const swap = (props) => {
     } = props;
 
     // Handle swap video before video call is connected
-    if (!VideoChat.connected) {
+    if (!this.connected) {
         alert("You must join a call before you can share your screen.");
         return;
     }

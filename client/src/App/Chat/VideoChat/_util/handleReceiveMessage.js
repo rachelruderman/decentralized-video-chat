@@ -1,6 +1,6 @@
 
 // Called when a message is received over the dataChannel
-export const handleReceiveMessage = (message) => {
+export function handleReceiveMessage(message) {
     // Add message to screen
     addMessageToScreen({ message, isOwnMessage: false });
     // Auto scroll chat down

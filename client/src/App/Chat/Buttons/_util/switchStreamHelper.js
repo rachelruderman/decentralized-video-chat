@@ -6,16 +6,16 @@ export const switchStreamHelper = ({ stream, findSenderByKind, localVideo, isPau
     const [videoTrack] = stream.getVideoTracks();
     // Add listen for if the current track swaps, swap back
     videoTrack.onended = function () {
-        VideoChat.swap();
+        this.swap();
     };
-    if (VideoChat.connected) {
+    if (this.connected) {
         // Find sender
         const sender = findSenderByKind(videoTrack.kind);
         // Replace sender track
         sender.replaceTrack(videoTrack);
     }
     // Update local video stream
-    VideoChat.localStream = videoTrack;
+    this.localStream = videoTrack;
     // Update local video object
     localVideo.srcObject = stream;
     // Unpause video on swap

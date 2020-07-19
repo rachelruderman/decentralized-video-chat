@@ -9,7 +9,7 @@ export const requestToggleCaptions = (props) => {
     } = props;
 
     // Handle requesting captions before connected
-    if (!VideoChat.connected) {
+    if (!this.connected) {
         alert("You must be connected to a peer to use Live Caption");
         return;
     }

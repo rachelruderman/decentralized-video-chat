@@ -1,4 +1,4 @@
-export const receiveCaptions = ({ captions, updateState }) => {
+export function receiveCaptions({ captions, updateState }) {
     updateState({ captionText: '' });
     // Other user is not using chrome
     if (captions === "notusingchrome") {

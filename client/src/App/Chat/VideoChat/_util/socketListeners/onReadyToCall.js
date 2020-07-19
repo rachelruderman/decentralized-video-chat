@@ -1,11 +1,11 @@
-import { logIt } from "../../_util/error/logIt";
+import { logIt } from "../../../_util/error/logIt";
 
 // When we are ready to call, enable the Call button.
-export const onReadyToCall = () => {
+export function onReadyToCall() {
     logIt("readyToCall");
     // First to join call will most likely initiate call
-    if (VideoChat.willInitiateCall) {
+    if (this.willInitiateCall) {
         logIt("Initiating call");
-        VideoChat.startCall();
+        this.startCall();
     }
 }

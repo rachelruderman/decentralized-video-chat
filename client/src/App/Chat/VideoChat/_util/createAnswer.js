@@ -4,19 +4,18 @@
 // description to the peerConnection object. Then the answer is created in the
 
 import { logIt } from "../../_util/error/logIt";
-import { VideoChat } from "..";
 
 // same manner as the offer and sent over the socket.
-export const createAnswer = ({ offer, rtcOffer, roomHash }) => {
+export function createAnswer({ offer, rtcOffer, roomHash }) {
     logIt("createAnswer");
     return () => {
         logIt(">>> Creating answer...");
         rtcOffer = new RTCSessionDescription(JSON.parse(offer));
-        VideoChat.peerConnection.setRemoteDescription(rtcOffer);
+        this.peerConnection.setRemoteDescription(rtcOffer);
 
         const onSuccess = (response) => {
-            VideoChat.peerConnection.setLocalDescription(response);
-            VideoChat.socket.emit("answer", JSON.stringify(response), roomHash);
+            this.peerConnection.setLocalDescription(response);
+            this.socket.emit("answer", JSON.stringify(response), roomHash);
         }
 
         const onError = (error) => {
@@ -24,6 +23,6 @@ export const createAnswer = ({ offer, rtcOffer, roomHash }) => {
             logIt(error, true);
         }
 
-        VideoChat.peerConnection.createAnswer(onSuccess, onError);
+        this.peerConnection.createAnswer(onSuccess, onError);
     };
 };

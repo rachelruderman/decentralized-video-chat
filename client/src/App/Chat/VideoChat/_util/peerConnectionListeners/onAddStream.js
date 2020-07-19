@@ -1,17 +1,16 @@
-import { logIt } from "../../_util/error/logIt";
-import { VideoChat } from "..";
+import { logIt } from "../../../_util/error/logIt";
 import Snackbar from 'node-snackbar';
 // Called when a stream is added to the peer connection
-export const onAddStream = (event) => {
+export function onAddStream(event) {
     logIt("onAddStream <<< Received new stream from remote. Adding it...");
     // Update remote video source
-    VideoChat.remoteVideo.srcObject = event.stream;
+    this.remoteVideo.srcObject = event.stream;
     // Close the initial share url snackbar
     Snackbar.close();
     // Remove the loading gif from video
-    VideoChat.remoteVideo.style.background = "none";
+    this.remoteVideo.style.background = "none";
     // Update connection status
-    VideoChat.connected = true;
+    this.connected = true;
     // Hide caption status text
     // captionText.fadeOut();
     // Reposition local video after a second, as there is often a delay

@@ -1,16 +1,14 @@
-import { requestMediaStream } from "./_util/requestMediaStream";
 import { onMediaStream } from "./_util/onMediaStream";
 import { startCall } from "./_util/startCall";
-import { onToken } from "./_util/onToken";
+import { onToken } from "./_util/socketListeners/onToken";
 import { onIceCandidate } from "./_util/onIceCandidate";
-import { onCandidate } from "./_util/onCandidate";
+import { onCandidate } from "./_util/socketListeners/onCandidate";
 import { createOffer } from "./_util/createOffer";
 import { createAnswer } from "./_util/createAnswer";
-import { onAddStream } from "./_util/onAddStream";
+import { onAddStream } from "./_util/peerConnectionListeners/onAddStream";
 import io from 'socket.io-client';
-import { onChatRoomFull } from "./_util/onChatRoomFull";
 import { redirectToNewCall } from "./_util/redirectToNewCall";
-import { receiveCaptions } from "./_util/receiveCaptions";
+import { receiveCaptions } from "./_util/socketListeners/receiveCaptions";
 
 export const VideoChat = {
     connected: false,
@@ -21,7 +19,6 @@ export const VideoChat = {
     recognition: undefined,
     roomHash: window.location.href.substring(window.location.href.lastIndexOf("/") + 1).toLowerCase(),
 
-    requestMediaStream,
     onMediaStream,
     startCall,
     onToken,

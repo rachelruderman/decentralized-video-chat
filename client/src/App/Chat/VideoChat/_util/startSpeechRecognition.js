@@ -1,10 +1,10 @@
 
-export const startSpeechRecognition = () => {
+export function startSpeechRecognition() {
     try {
         var SpeechRecognition =
             window.SpeechRecognition || window.webkitSpeechRecognition;
-        VideoChat.recognition = new SpeechRecognition();
-        // VideoChat.recognition.lang = "en";
+        this.recognition = new SpeechRecognition();
+        // this.recognition.lang = "en";
     } catch (e) {
         sendingCaptions = false;
         logIt(e);
@@ -14,11 +14,11 @@ export const startSpeechRecognition = () => {
         return;
     }
     // recognition.maxAlternatives = 3;
-    VideoChat.recognition.continuous = true;
+    this.recognition.continuous = true;
     // Show results that aren't final
-    VideoChat.recognition.interimResults = true;
+    this.recognition.interimResults = true;
     var finalTranscript;
-    VideoChat.recognition.onresult = (event) => {
+    this.recognition.onresult = (event) {
         let interimTranscript = "";
         for (let i = event.resultIndex, len = event.results.length; i < len; i++) {
             var transcript = event.results[i][0].transcript;
@@ -36,14 +36,14 @@ export const startSpeechRecognition = () => {
             }
         }
     };
-    VideoChat.recognition.onend = () => {
+    this.recognition.onend = () => {
         logIt("on speech recording end");
         // Restart speech recognition if user has not stopped it
         if (sendingCaptions) {
             startSpeech();
         } else {
-            VideoChat.recognition.stop();
+            this.recognition.stop();
         }
     };
-    VideoChat.recognition.start();
+    this.recognition.start();
 }

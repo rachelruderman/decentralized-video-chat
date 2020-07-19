@@ -1,7 +1,7 @@
 
-export const toggleSendCaptions = () => {
+export function toggleSendCaptions() {
     (isSendingCaptions)
-        ? VideoChat.recognition.stop()
+        ? this.recognition.stop()
         : startSpeech();
 
     updateState({ isSendingCaptions: !isSendingCaptions });

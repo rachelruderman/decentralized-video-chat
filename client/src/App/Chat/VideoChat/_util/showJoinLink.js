@@ -1,7 +1,7 @@
 import Snackbar from 'node-snackbar';
 import copy from 'copy-to-clipboard';
 
-export const showJoinLink = () => {
+export function showJoinLink() {
     const { href } = window.location;
 
     Snackbar.show({

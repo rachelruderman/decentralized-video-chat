@@ -1,22 +1,21 @@
-import { VideoChat } from "..";
-import { logIt } from "../../_util/error/logIt";
+import { logIt } from "../../../_util/error/logIt";
 
 // When we receive the ephemeral token back from the server.
-export const onToken = (callback) => {
+export function onToken(callback) {
     logIt("onToken");
     return function (token) {
         logIt("<<< Received token");
         // Set up a new RTCPeerConnection using the token's iceServers.
-        VideoChat.peerConnection = new RTCPeerConnection({
+        this.peerConnection = new RTCPeerConnection({
             iceServers: token.iceServers,
         });
         // Add the local video stream to the peerConnection.
-        VideoChat.localStream.getTracks().forEach(function (track) {
-            VideoChat.peerConnection.addTrack(track, VideoChat.localStream);
+        this.localStream.getTracks().forEach(function (track) {
+            this.peerConnection.addTrack(track, this.localStream);
         });
         // Add general purpose data channel to peer connection,
         // used for text chats, captions, and toggling sending captions
-        const dataChannel = VideoChat.peerConnection.createDataChannel("chat", {
+        const dataChannel = this.peerConnection.createDataChannel("chat", {
             negotiated: true,
             // both peers must have same id
             id: 0,
@@ -32,43 +31,39 @@ export const onToken = (callback) => {
             const dataType = receivedData.substring(0, 4);
             const cleanedMessage = receivedData.slice(4);
             if (dataType === "mes:") {
-                VideoChat.handleReceiveMessage(cleanedMessage);
+                this.handleReceiveMessage(cleanedMessage);
             } else if (dataType === "cap:") {
-                VideoChat.receiveCaptions({ captions: cleanedMessage });
+                this.receiveCaptions({ captions: cleanedMessage });
             } else if (dataType === "tog:") {
-                VideoChat.toggleSendCaptions();
+                this.toggleSendCaptions();
             }
         };
         // Set up callbacks for the connection generating iceCandidates or
         // receiving the remote media stream.
-        VideoChat.peerConnection.onicecandidate = VideoChat.onIceCandidate;
-        VideoChat.peerConnection.onaddstream = VideoChat.onAddStream;
+        this.peerConnection.onicecandidate = this.onIceCandidate;
+        this.peerConnection.onaddstream = this.onAddStream;
         // Set up listeners on the socket
-        VideoChat.socket.on("candidate", VideoChat.onCandidate);
-        VideoChat.socket.on("answer", VideoChat.onAnswer);
-        VideoChat.socket.on("requestToggleCaptions", VideoChat.toggleSendCaptions);
-        VideoChat.socket.on("receiveCaptions", VideoChat.receiveCaptions);
+        this.socket.on("candidate", this.onCandidate);
+        this.socket.on("answer", this.onAnswer);
+        this.socket.on("requestToggleCaptions", this.toggleSendCaptions);
+        this.socket.on("receiveCaptions", this.receiveCaptions);
         // Called when there is a change in connection state
-        VideoChat.peerConnection.oniceconnectionstatechange = (event) => {
-            switch (VideoChat.peerConnection.iceConnectionState) {
+        this.peerConnection.oniceconnectionstatechange = () => {
+            const { iceConnectionState } = this.peerConnection;
+            logIt(iceConnectionState);
+            switch (iceConnectionState) {
                 case "connected":
-                    logIt("connected");
                     // Once connected we no longer have a need for the signaling server, so disconnect
-                    VideoChat.socket.disconnect();
-                    break;
-                case "disconnected":
-                    logIt("disconnected");
+                    this.socket.disconnect();
                     break;
                 case "failed":
-                    logIt("failed");
-                    // VideoChat.socket.connect
-                    // VideoChat.createOffer();
+                    // this.socket.connect
+                    // this.createOffer();
                     // Refresh page if connection has failed
                     window.location.reload();
                     break;
+                case "disconnected":
                 case "closed":
-                    logIt("closed");
-                    break;
                 default:
                     break;
             }
