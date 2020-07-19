@@ -64,6 +64,14 @@ export class VideoChat extends Component {
         await this.requestMediaStream();
     }
 
+    componentDidUpdate = (prevProps, prevState) => {
+        const didToggleMute = (prevProps.state.isMuted !== this.props.state.isMuted);
+        if (didToggleMute) {
+            const sender = this.findSenderByKind('audio');
+            sender.track.enabled = this.props.state.isMuted;
+        }
+    }
+
     requestMediaStream = async () => {
         try {
             logIt("requestMediaStream");
