@@ -22,9 +22,7 @@ export const App = () => {
         <BrowserRouter>
             {renderHeader()}
             <Switch>
-                <Route path="/chat">
-                    <Chat />
-                </Route>
+                <Route path="/chat" component={Chat} />
                 <Route path="/newcall">
                     <div style={{ color: 'white' }}>New call page</div>
                 </Route>
