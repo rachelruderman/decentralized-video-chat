@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import { Buttons } from './Buttons';
 import { VideoChat } from './VideoChat';
 import { EntireChat } from './EntireChat';
+import { RemoteVideo } from './RemoteVideo';
+import { LocalVideo } from './LocalVideo';
 
 export const Chat = () => {
 
@@ -69,8 +71,14 @@ export const Chat = () => {
 
     const renderVideoChat = () => <VideoChat {...childProps} />;
 
+    const renderRemoteVideo = () => <RemoteVideo {...childProps} />
+
+    const renderLocalVideo = () => <LocalVideo {...childProps} />
+
     return (
         <div onMouseMove={onMouseMove}>
+            {renderRemoteVideo()}
+            {renderLocalVideo()}
             {renderVideoChat()}
             {renderEntireChat()}
             {renderButtons()}

@@ -1,6 +1,4 @@
-import React, { Component, Fragment } from 'react';
-import { RemoteVideo } from './RemoteVideo';
-import { LocalVideo } from './LocalVideo';
+import { Component } from 'react';
 import { createAnswer } from './_util/createAnswer';
 import { createOffer } from './_util/createOffer';
 import { setDocumentTitle } from '../_util/setDocumentTitle';
@@ -100,9 +98,6 @@ export class VideoChat extends Component {
 
     // useInitializeVideoChat = ({ remoteVideoRef, localVideoRef });
 
-    renderRemoteVideo = () => <RemoteVideo {...this.props} />
-
-    renderLocalVideo = () => <LocalVideo {...this.props} />
 
     // const rePositionLocalVideo = () => {
     //     // Get position of remote video
@@ -122,11 +117,6 @@ export class VideoChat extends Component {
     // }
 
     render() {
-        return (
-            <Fragment>
-                {this.renderRemoteVideo()}
-                {this.renderLocalVideo()}
-            </Fragment>
-        )
+        return null;
     }
 }
