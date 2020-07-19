@@ -3,7 +3,7 @@
 // needs to be parsed into an RTCSessionDescription and added as the remote
 // description to the peerConnection object. Then the answer is created in the
 
-import { logIt } from "../../error/logIt";
+import { logIt } from "../../_util/error/logIt";
 import { VideoChat } from "..";
 
 // same manner as the offer and sent over the socket.

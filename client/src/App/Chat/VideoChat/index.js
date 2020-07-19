@@ -2,7 +2,7 @@ import React, { useRef, Fragment } from 'react';
 import { useInitializeVideoChat } from './_hooks/useInitializeVideoChat';
 import { RemoteVideo } from './RemoteVideo';
 import { LocalVideo } from './LocalVideo';
-
+// video chat is a use case for a class component
 export const VideoChat = (props) => {
 
 

@@ -1,4 +1,4 @@
-import { logIt } from "../../error/logIt";
+import { logIt } from "../../_util/error/logIt";
 import { VideoChat } from "..";
 import Snackbar from 'node-snackbar';
 // Called when a stream is added to the peer connection

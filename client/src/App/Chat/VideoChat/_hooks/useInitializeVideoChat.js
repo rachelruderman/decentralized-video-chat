@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { redirectUnsupportedBrowsers } from "../../_util/device/redirectUnsupportedBrowsers";
 import { setDocumentTitle } from "../../_util/setDocumentTitle";
-import { VideoChat } from "../../_util/videoChat";
+import { VideoChat } from "../videoChat";
 
 let isReadyToRender = false;
 

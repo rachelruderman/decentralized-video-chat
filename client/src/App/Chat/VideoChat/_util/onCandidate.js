@@ -1,6 +1,6 @@
 // When receiving a candidate over the socket, turn it back into a real
 
-import { logIt } from "../../error/logIt";
+import { logIt } from "../../_util/error/logIt";
 import { VideoChat } from "..";
 
 // RTCIceCandidate and add it to the peerConnection.

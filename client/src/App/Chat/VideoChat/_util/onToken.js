@@ -1,5 +1,5 @@
 import { VideoChat } from "..";
-import { logIt } from "../../error/logIt";
+import { logIt } from "../../_util/error/logIt";
 
 // When we receive the ephemeral token back from the server.
 export const onToken = (callback) => {

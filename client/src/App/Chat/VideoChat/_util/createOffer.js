@@ -1,4 +1,4 @@
-import { logIt } from "../../error/logIt";
+import { logIt } from "../../_util/error/logIt";
 import { VideoChat } from "..";
 
 // Create an offer that contains the media capabilities of the browser.

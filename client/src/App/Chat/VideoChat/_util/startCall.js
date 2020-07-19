@@ -1,4 +1,4 @@
-import { logIt } from "../../error/logIt";
+import { logIt } from "../../_util/error/logIt";
 import { VideoChat } from "..";
 
 // Set up a callback to run when we have the ephemeral token to use Twilio's TURN server.
