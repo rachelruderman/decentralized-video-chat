@@ -1,15 +1,15 @@
 import Snackbar from 'node-snackbar'
+import { videoChat } from '../../_util/videoChat';
 
 export const requestToggleCaptions = (props) => {
 
     const {
-        VideoChat,
         state,
         updateState,
     } = props;
 
     // Handle requesting captions before connected
-    if (!this.connected) {
+    if (!videoChat.isConnected) {
         alert("You must be connected to a peer to use Live Caption");
         return;
     }

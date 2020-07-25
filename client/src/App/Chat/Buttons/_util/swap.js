@@ -1,20 +1,19 @@
 import Snackbar from 'node-snackbar'
 import { switchStreamHelper } from './switchStreamHelper';
 import { logIt } from '../../_util/error/logIt';
+import { videoChat } from '../../_util/videoChat';
 
 // Swap camera / screen share
 export const swap = (props) => {
 
     const {
-        VideoChat,
         localVideo,
         updateState,
-        chatZone,
         state,
     } = props;
 
     // Handle swap video before video call is connected
-    if (!this.connected) {
+    if (!videoChat.isConnected) {
         alert("You must join a call before you can share your screen.");
         return;
     }

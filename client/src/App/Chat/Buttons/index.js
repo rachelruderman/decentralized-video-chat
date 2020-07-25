@@ -6,7 +6,7 @@ import { swap } from './_util/swap';
 import { togglePictureInPicture } from './_util/togglePictureInPicture';
 import { toggleChat } from './_util/toggleChat';
 import { muteMicrophone, } from './_util/muteMicrophone';
-import { redirectToNewCall } from '../VideoChat/_util/redirectToNewCall';
+import { redirectToNewCall } from '../_util/videoChat/_util/redirectToNewCall';
 
 export const Buttons = (props) => {
 

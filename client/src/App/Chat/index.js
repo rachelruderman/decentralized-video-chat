@@ -1,9 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Buttons } from './Buttons';
-import { VideoChat } from './VideoChat';
 import { EntireChat } from './EntireChat';
 import { RemoteVideo } from './RemoteVideo';
 import { LocalVideo } from './LocalVideo';
+import { videoChat } from './_util/videoChat';
+import { setDocumentTitle } from './_util/setDocumentTitle';
+import { redirectUnsupportedBrowsers } from './_util/device/redirectUnsupportedBrowsers';
 
 export const Chat = () => {
 
@@ -21,6 +23,13 @@ export const Chat = () => {
         captionText: '',
         peerConnection: null,
     }
+
+    useEffect(() => {
+        redirectUnsupportedBrowsers();
+        setDocumentTitle(window.location.pathname);
+        // rePositionLocalVideo();
+        videoChat.requestMediaStream();
+    }, [])
 
     const [state, setState] = useState(initialState);
 
@@ -69,8 +78,6 @@ export const Chat = () => {
 
     const renderEntireChat = () => <EntireChat {...childProps} />;
 
-    const renderVideoChat = () => <VideoChat {...childProps} />;
-
     const renderRemoteVideo = () => <RemoteVideo {...childProps} />
 
     const renderLocalVideo = () => <LocalVideo {...childProps} />
@@ -79,7 +86,6 @@ export const Chat = () => {
         <div onMouseMove={onMouseMove}>
             {renderRemoteVideo()}
             {renderLocalVideo()}
-            {renderVideoChat()}
             {renderEntireChat()}
             {renderButtons()}
         </div>
