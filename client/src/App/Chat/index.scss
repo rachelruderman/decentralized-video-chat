@@ -79,8 +79,11 @@ video {
 }
 
 #local-video {
-  width: 100%;
+  width: 15%;
   height: auto;
+  cursor: move;
+  z-index: 100;
+
   border-radius: 10px;
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);

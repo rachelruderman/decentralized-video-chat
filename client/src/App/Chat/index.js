@@ -83,7 +83,7 @@ export const Chat = () => {
     const renderLocalVideo = () => <LocalVideo {...childProps} />
 
     return (
-        <div onMouseMove={onMouseMove}>
+        <div onMouseMove={onMouseMove} id='chat'>
             {renderRemoteVideo()}
             {renderLocalVideo()}
             {renderEntireChat()}

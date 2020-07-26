@@ -19,27 +19,20 @@ export const LocalVideo = ({ localVideoRef, isPaused, isInitialized }) => {
         }
     }, [isInitialized, isPaused])
 
-
-    const renderText = () => {
-        return <p id="local-video-text">{text}</p>
-    }
-
-    const renderVideo = () => (
-        <Draggable nodeRef={localVideoRef}>
-            <video
-                id="local-video"
-                autoPlay
-                muted
-                playsInline
-                ref={localVideoRef} />
-        </Draggable>
-
-    )
-
     return (
         <>
-            {renderText()}
-            {renderVideo()}
+            <Draggable
+                bounds='parent'
+                nodeRef={localVideoRef}>
+                <video
+                    id="local-video"
+                    autoPlay
+                    muted
+                    playsInline
+                    ref={localVideoRef} />
+            </Draggable>
+            <p id="local-video-text">{text}</p>
         </>
+
     )
 }
