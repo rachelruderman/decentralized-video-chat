@@ -8,7 +8,7 @@ export function onOffer(offer) {
     logIt("onOffer <<< Received offer");
     videoChat.socket.on(
         "token",
-        videoChat.onToken(videoChat.Chat.createAnswer(offer))
+        videoChat.onToken(videoChat.createAnswer(offer))
     );
     videoChat.socket.emit("token", videoChat.Chat.roomHash);
 }

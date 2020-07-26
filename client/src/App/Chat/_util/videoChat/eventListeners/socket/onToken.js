@@ -58,8 +58,8 @@ export function onToken(callback) {
                     videoChat.socket.disconnect();
                     break;
                 case "failed":
-                    // videoChat.Chat.socket.connect
-                    // videoChat.Chat.createOffer();
+                    // videoChat.socket.connect
+                    // videoChat.createOffer();
                     // Refresh page if connection has failed
                     window.location.reload();
                     break;
