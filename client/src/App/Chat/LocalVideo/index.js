@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 
-export const LocalVideo = ({ localVideoRef, isPaused, isInitialized }) => {
+export const LocalVideo = ({ localVideoRef, isPaused, isInitialized, captionsRef }) => {
 
     const [text, setText] = useState('No webcam input');
 
@@ -31,7 +31,7 @@ export const LocalVideo = ({ localVideoRef, isPaused, isInitialized }) => {
                     playsInline
                     ref={localVideoRef} />
             </Draggable>
-            <p id="local-video-text">{text}</p>
+            <p id="local-video-text" ref={captionsRef}>{text}</p>
         </>
 
     )
