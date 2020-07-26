@@ -20,7 +20,7 @@ export const videoChat = {
     // todo: organize these into subobjects
 
     // websocket
-    socket: io(),
+    socket: io('ws://localhost:3001'),
     isConnected: false,
     willInitiateCall: false,
     onFull,

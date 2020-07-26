@@ -1,5 +1,6 @@
+import { videoChat } from "../..";
+
 export function findSenderByKind(kind) {
-    console.log(this, 'findsenderbykind');
-    const senders = this.peerConnection.getSenders();
+    const senders = videoChat.peerConnection.getSenders();
     return senders.find(sender => (sender.track.kind === kind));
 }

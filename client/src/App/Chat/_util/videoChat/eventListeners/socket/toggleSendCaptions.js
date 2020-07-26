@@ -1,7 +1,8 @@
+import { videoChat } from "../..";
 
 export function toggleSendCaptions() {
     (isSendingCaptions)
-        ? this.recognition.stop()
+        ? videoChat.recognition.stop()
         : startSpeech();
 
     updateState({ isSendingCaptions: !isSendingCaptions });

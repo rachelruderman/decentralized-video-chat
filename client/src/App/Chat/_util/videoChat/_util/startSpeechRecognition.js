@@ -1,10 +1,10 @@
+import { videoChat } from "..";
 
 export function startSpeechRecognition() {
     try {
-        var SpeechRecognition =
-            window.SpeechRecognition || window.webkitSpeechRecognition;
-        this.recognition = new SpeechRecognition();
-        // this.recognition.lang = "en";
+        const SpeechRecognition = (window.SpeechRecognition || window.webkitSpeechRecognition);
+        videoChat.recognition = new SpeechRecognition();
+        // videoChat.recognition.lang = "en";
     } catch (e) {
         sendingCaptions = false;
         logIt(e);
@@ -14,14 +14,14 @@ export function startSpeechRecognition() {
         return;
     }
     // recognition.maxAlternatives = 3;
-    this.recognition.continuous = true;
+    videoChat.recognition.continuous = true;
     // Show results that aren't final
-    this.recognition.interimResults = true;
-    var finalTranscript;
-    this.recognition.onresult = (event) {
+    videoChat.recognition.interimResults = true;
+    let finalTranscript;
+    videoChat.recognition.onresult = (event) {
         let interimTranscript = "";
         for (let i = event.resultIndex, len = event.results.length; i < len; i++) {
-            var transcript = event.results[i][0].transcript;
+            let transcript = event.results[i][0].transcript;
             if (event.results[i].isFinal) {
                 finalTranscript += transcript;
             } else {
@@ -36,14 +36,14 @@ export function startSpeechRecognition() {
             }
         }
     };
-    this.recognition.onend = () => {
+    videoChat.recognition.onend = () => {
         logIt("on speech recording end");
         // Restart speech recognition if user has not stopped it
         if (sendingCaptions) {
             startSpeech();
         } else {
-            this.recognition.stop();
+            videoChat.recognition.stop();
         }
     };
-    this.recognition.start();
+    videoChat.recognition.start();
 }

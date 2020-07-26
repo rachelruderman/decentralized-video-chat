@@ -1,6 +1,7 @@
 // When receiving a candidate over the socket, turn it back into a real
 
 import { logIt } from "../../../error/logIt";
+import { videoChat } from "../..";
 
 // RTCIceCandidate and add it to the peerConnection.
 export function onCandidate({ candidate, updateState, rtcCandidate }) {
@@ -10,5 +11,5 @@ export function onCandidate({ candidate, updateState, rtcCandidate }) {
     logIt(
         `onCandidate <<< Received remote ICE candidate (${rtcCandidate.address} - ${rtcCandidate.relatedAddress})`
     );
-    this.peerConnection.addIceCandidate(rtcCandidate);
+    videoChat.peerConnection.addIceCandidate(rtcCandidate);
 };

@@ -1,4 +1,5 @@
 import { logIt } from "../../../error/logIt";
+import { videoChat } from "../..";
 
 let roomHash;
 
@@ -9,9 +10,9 @@ export function onIceCandidate({ candidate }) {
         logIt(
             `<<< Received local ICE candidate from STUN/TURN server (${candidate.address})`
         );
-        if (this.isConnected) {
+        if (videoChat.isConnected) {
             logIt(`>>> Sending local ICE candidate (${candidate.address})`);
-            this.socket.emit(
+            videoChat.socket.emit(
                 "candidate",
                 JSON.stringify(candidate),
                 roomHash
@@ -21,7 +22,7 @@ export function onIceCandidate({ candidate }) {
             // This most likely is happening on the "caller" side.
             // The peer may not have created the RTCPeerConnection yet, so we are waiting for the 'answer'
             // to arrive. This will signal that the peer is ready to receive signaling.
-            this.localICECandidates.push(candidate);
+            videoChat.localICECandidates.push(candidate);
         }
     }
 };

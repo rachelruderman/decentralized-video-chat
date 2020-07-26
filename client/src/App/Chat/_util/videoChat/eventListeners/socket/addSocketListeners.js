@@ -1,9 +1,10 @@
 import { logIt } from "../../../error/logIt";
+import { videoChat } from "../..";
 
 export function addSocketListeners() {
     logIt('addSocketListeners');
-    this.socket.on("full", this.onFull);
-    this.socket.on("offer", this.onOffer);
-    this.socket.on("ready", this.onReady);
-    this.socket.on("willInitiateCall", this.onWillInitiateCall);
+    videoChat.socket.on("full", videoChat.onFull);
+    videoChat.socket.on("offer", videoChat.onOffer);
+    videoChat.socket.on("ready", videoChat.onReady);
+    videoChat.socket.on("willInitiateCall", videoChat.onWillInitiateCall);
 }

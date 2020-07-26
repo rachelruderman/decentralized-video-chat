@@ -1,4 +1,5 @@
 import { logIt } from "../../error/logIt";
+import { videoChat } from "..";
 
 // Create an offer that contains the media capabilities of the browser.
 export function createOffer({ roomHash }) {
@@ -8,8 +9,8 @@ export function createOffer({ roomHash }) {
         // If the offer is created successfully, set it as the local description
         // and send it over the socket connection to initiate the peerConnection
         // on the other side.
-        this.peerConnection.setLocalDescription(offer);
-        this.socket.emit("offer", JSON.stringify(offer), roomHash);
+        videoChat.peerConnection.setLocalDescription(offer);
+        videoChat.socket.emit("offer", JSON.stringify(offer), roomHash);
     }
 
     const onError = (error) => {
@@ -17,5 +18,5 @@ export function createOffer({ roomHash }) {
         logIt(error, true);
     }
 
-    this.peerConnection.createOffer(onSuccess, onError)
+    videoChat.peerConnection.createOffer(onSuccess, onError)
 };

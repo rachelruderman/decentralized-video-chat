@@ -1,4 +1,5 @@
 import { logIt } from "../../../error/logIt";
+import { videoChat } from "../..";
 
 // When we receive the ephemeral token back from the server.
 export function onToken(callback) {
@@ -6,16 +7,16 @@ export function onToken(callback) {
     return function (token) {
         logIt("<<< Received token");
         // Set up a new RTCPeerConnection using the token's iceServers.
-        this.peerConnection = new RTCPeerConnection({
+        videoChat.peerConnection = new RTCPeerConnection({
             iceServers: token.iceServers,
         });
         // Add the local video stream to the peerConnection.
-        this.localStream.getTracks().forEach(function (track) {
-            this.peerConnection.addTrack(track, this.localStream);
+        videoChat.localStream.getTracks().forEach(function (track) {
+            videoChat.peerConnection.addTrack(track, videoChat.localStream);
         });
         // Add general purpose data channel to peer connection,
         // used for text chats, captions, and toggling sending captions
-        const dataChannel = this.peerConnection.createDataChannel("chat", {
+        const dataChannel = videoChat.peerConnection.createDataChannel("chat", {
             negotiated: true,
             // both peers must have same id
             id: 0,
@@ -31,34 +32,34 @@ export function onToken(callback) {
             const dataType = receivedData.substring(0, 4);
             const cleanedMessage = receivedData.slice(4);
             if (dataType === "mes:") {
-                this.handleReceiveMessage(cleanedMessage);
+                videoChat.handleReceiveMessage(cleanedMessage);
             } else if (dataType === "cap:") {
-                this.receiveCaptions({ captions: cleanedMessage });
+                videoChat.receiveCaptions({ captions: cleanedMessage });
             } else if (dataType === "tog:") {
-                this.toggleSendCaptions();
+                videoChat.toggleSendCaptions();
             }
         };
         // Set up callbacks for the connection generating iceCandidates or
         // receiving the remote media stream.
-        this.peerConnection.onicecandidate = this.onIceCandidate;
-        this.peerConnection.onaddstream = this.onAddStream;
+        videoChat.peerConnection.onicecandidate = videoChat.onIceCandidate;
+        videoChat.peerConnection.onaddstream = videoChat.onAddStream;
         // Set up listeners on the socket
-        this.socket.on("candidate", this.onCandidate);
-        this.socket.on("answer", this.onAnswer);
-        this.socket.on("requestToggleCaptions", this.toggleSendCaptions);
-        this.socket.on("receiveCaptions", this.receiveCaptions);
+        videoChat.socket.on("candidate", videoChat.onCandidate);
+        videoChat.socket.on("answer", videoChat.onAnswer);
+        videoChat.socket.on("requestToggleCaptions", videoChat.toggleSendCaptions);
+        videoChat.socket.on("receiveCaptions", videoChat.receiveCaptions);
         // Called when there is a change in connection state
-        this.peerConnection.oniceconnectionstatechange = () => {
-            const { iceConnectionState } = this.peerConnection;
+        videoChat.peerConnection.oniceconnectionstatechange = () => {
+            const { iceConnectionState } = videoChat.peerConnection;
             logIt(iceConnectionState);
             switch (iceConnectionState) {
                 case "connected":
                     // Once connected we no longer have a need for the signaling server, so disconnect
-                    this.socket.disconnect();
+                    videoChat.socket.disconnect();
                     break;
                 case "failed":
-                    // this.socket.connect
-                    // this.createOffer();
+                    // videoChat.Chat.socket.connect
+                    // videoChat.Chat.createOffer();
                     // Refresh page if connection has failed
                     window.location.reload();
                     break;
