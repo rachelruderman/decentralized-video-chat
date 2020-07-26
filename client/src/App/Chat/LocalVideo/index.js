@@ -25,21 +25,21 @@ export const LocalVideo = ({ localVideoRef, isPaused, isInitialized }) => {
     }
 
     const renderVideo = () => (
-        <video id="local-video" autoPlay muted playsInline ref={localVideoRef} />
+        <Draggable>
+            <video
+                id="local-video"
+                autoPlay
+                muted
+                playsInline
+                ref={localVideoRef} />
+        </Draggable>
+
     )
 
     return (
-        // <Draggable
-        <div
-            axis="x"
-            defaultPosition={{ x: 0, y: 0 }}
-            position={null}
-            grid={[25, 25]}
-            scale={1}
-        >
+        <>
             {renderText()}
             {renderVideo()}
-        </div>
-        // </Draggable>
+        </>
     )
 }
