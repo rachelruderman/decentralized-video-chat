@@ -6,6 +6,7 @@ import { LocalVideo } from './LocalVideo';
 import { videoChat } from './_util/videoChat';
 import { setDocumentTitle } from './_util/setDocumentTitle';
 import { redirectUnsupportedBrowsers } from './_util/device/redirectUnsupportedBrowsers';
+import { isMobileOrTablet } from './_util/device/isMobileOrTablet';
 
 export const Chat = () => {
 
@@ -27,7 +28,7 @@ export const Chat = () => {
     useEffect(() => {
         redirectUnsupportedBrowsers();
         setDocumentTitle(window.location.pathname);
-        // rePositionLocalVideo();
+        rePositionLocalVideo();
         videoChat.requestMediaStream();
     }, [])
 
@@ -49,11 +50,25 @@ export const Chat = () => {
 
     // Reposition captions to bottom of video
     const rePositionCaptions = () => {
-        // let bounds = remoteVideo.getBoundingClientRect();
+        const { top } = remoteVideoRef.current.getBoundingClientRect();
         // bounds.top -= 10;
         // bounds.top = bounds.top + remoteVideo.getAttribute('height') - 1 * captionText.height();
         // // Reposition captions
         // captionText.css(bounds);
+    }
+
+    // Reposition local video to top left of remote video
+    const rePositionLocalVideo = () => {
+        // Get position of remote video
+        const { top, left } = remoteVideoRef.current.getBoundingClientRect();
+
+        const x = (left + 10);
+        const y = (isMobileOrTablet)
+            ? (window.innerHeight * 0.7)
+            : (top + 10);
+
+        // Set position of local video
+        localVideoRef.current.style.transform = `translate(${x}px, ${y}px)`;
     }
 
     const onMouseMove = () => {
