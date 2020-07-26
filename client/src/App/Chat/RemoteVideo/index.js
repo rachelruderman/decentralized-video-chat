@@ -1,11 +1,14 @@
 // fadeOut this text when live caption ends
-import React from 'react';
+import React, { useState } from 'react';
 
 export const RemoteVideo = ({ remoteVideoRef }) => {
-    console.log('rendering remote vid')
+
+    // todo: fade in the caption
+    const [caption, setCaption] = useState('Waiting for other user to join');
+
     return (
         <>
-            <p id="remote-video-text" />
+            <p id="remote-video-text">{caption}</p>
             <video id="remote-video" autoPlay playsInline ref={remoteVideoRef} />
         </>
     )
