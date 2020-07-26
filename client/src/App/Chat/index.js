@@ -43,7 +43,19 @@ export const Chat = () => {
     const remoteVideoRef = useRef();
     const localVideoRef = useRef();
 
+    const remoteVideo = remoteVideoRef.current;
+    const localVideo = localVideoRef.current;
+
     const updateState = (data) => setState(prevState => ({ ...prevState, ...data }));
+
+    // Reposition captions to bottom of video
+    const rePositionCaptions = () => {
+        const { top } = remoteVideoRef.current.getBoundingClientRect();
+        // bounds.top -= 10;
+        // bounds.top = bounds.top + remoteVideo.getAttribute('height') - 1 * captionText.height();
+        // // Reposition captions
+        // captionText.css(bounds);
+    }
 
     // Reposition local video to top left of remote video
     const rePositionLocalVideo = () => {
@@ -73,6 +85,8 @@ export const Chat = () => {
         updateState,
         remoteVideoRef,
         localVideoRef,
+        remoteVideo,
+        localVideo
     };
 
     const renderButtons = () => <Buttons {...childProps} />;
