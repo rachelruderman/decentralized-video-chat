@@ -6,6 +6,7 @@ import {
     Route,
     Redirect
 } from "react-router-dom";
+import { NewCall } from './NewCall';
 
 export const App = () => {
 
@@ -23,9 +24,7 @@ export const App = () => {
             {renderHeader()}
             <Switch>
                 <Route path="/chat" component={Chat} />
-                <Route path="/newcall">
-                    <div style={{ color: 'white' }}>New call page</div>
-                </Route>
+                <Route path="/newcall" component={NewCall} />
                 <Route exact path="/">
                     <div style={{ color: 'white' }}>home page</div>
                 </Route>

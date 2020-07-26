@@ -40,8 +40,8 @@ export const EntireChat = ({ showChat, chatZone, state }) => {
                     {messages.map(({ message, source }) => {
                         return (
                             <div className={`message-item ${source} cssanimation fadeInBottom`}>
-                                <div class="message-bloc">
-                                    <div class="message">
+                                <div className="message-bloc">
+                                    <div className="message">
                                         {message}
                                     </div>
                                 </div>
