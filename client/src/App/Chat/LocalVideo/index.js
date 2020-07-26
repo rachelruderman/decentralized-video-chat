@@ -25,7 +25,7 @@ export const LocalVideo = ({ localVideoRef, isPaused, isInitialized }) => {
     }
 
     const renderVideo = () => (
-        <Draggable>
+        <Draggable nodeRef={localVideoRef}>
             <video
                 id="local-video"
                 autoPlay
