@@ -34,12 +34,6 @@ export const Chat = () => {
 
     const [state, setState] = useState(initialState);
 
-    // // Called when window is resized
-    // const windowResized = () => {
-    //     rePositionLocalVideo();
-    //     rePositionCaptions();
-    // }
-
     const remoteVideoRef = useRef();
     const localVideoRef = useRef();
 
