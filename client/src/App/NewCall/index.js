@@ -1,6 +1,9 @@
 import React from 'react'
+import { useHistory } from 'react-router-dom';
 
 export const NewCall = () => {
+    const history = useHistory();
+
     return (
         <main className="site-content">
             <section className="hero section illustration-section-01">
@@ -56,7 +59,7 @@ export const NewCall = () => {
                                     />
                                     <button
                                         className="button button-primary pulse"
-                                        onclick="{window.location.href = '/join/' + document.getElementById('input-01').value}"
+                                        onClick={() => history.push(`/join/${document.getElementById('input-01').value}`)}
                                     >
                                         Go To My Call
                     </button>
